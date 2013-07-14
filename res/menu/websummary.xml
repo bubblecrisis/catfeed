@@ -1,0 +1,6 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menuitem_search"
+          android:title="View"
+          android:icon="@drawable/location_web_site"
+          android:showAsAction="ifRoom|withText"/>
+</menu>

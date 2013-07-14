@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cat Feed</string>
+    <string name="title_webfeed_detail">WebFeed Detail</string>
+    <string name="sql_subscription_create"><![CDATA[
+        create table SUBSCRIPTION (
+        _id         integer primary key autoincrement,
+        url         text unique not null,
+        title       text not null,
+        lastupdate  integer,
+        category    text,
+        icon        blob,
+        dlimages    integer default 1,
+        dlpage      integer default 1,
+        showsummary integer default 1,
+        retain	    integer default 5
+        )
+    ]]></string>
+    <string name="sql_webfeed_create"><![CDATA[
+        create table WEBFEED (
+        _id         integer primary key autoincrement,
+        sub_id      integer not null,    
+        link        text,
+        title       text not null,
+        category    text,
+        summary     text,
+        thumbnail   blob,
+        date        integer,
+        dateread    integer,
+        contenttype text,
+        body        text,
+        cached      integer,
+        favourite   integer
+        )
+    ]]></string>    
+</resources>

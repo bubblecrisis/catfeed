@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menuitem_edit"
+          android:title="Edit"
+          android:icon="@drawable/content_edit"
+          android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/menuitem_refresh"
+          android:title="Refresh"
+          android:icon="@drawable/navigation_refresh"
+          android:showAsAction="ifRoom|withText"/>
+</menu>

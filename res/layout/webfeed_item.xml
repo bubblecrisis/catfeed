@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical|left"
+    android:background="#FFFFFF"
+    android:orientation="horizontal" 
+    android:clickable="false"
+    >
+
+    <RelativeLayout 
+        android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+   		android:layout_weight="1"
+    >
+		<TextView
+		    android:id="@+id/title"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginLeft="10dp"
+		    android:layout_marginTop="5dp"
+		    android:clickable="false"
+		    android:ellipsize="end"
+		    android:maxHeight="40dp"
+		    android:maxLines="2"
+		    android:minHeight="40dp"
+		    android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+		    android:textColor="#000000"
+		    android:textIsSelectable="false"
+		    android:textSize="16sp" >
+		</TextView>
+		
+		<TextView 
+		    android:id="@+id/when"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@id/title"
+		    android:layout_marginLeft="10dp"
+		    android:textColor="#9F9F9F"
+		    android:textSize="12sp"
+		    android:text="Today"
+		    ></TextView>
+		
+		<TextView 
+		    android:id="@+id/cached"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@id/title"
+		    android:layout_toRightOf="@id/when"
+		    android:layout_marginLeft="10dp"
+		    android:textColor="#9F9F9F"
+		    android:textSize="12sp"
+		    android:text="Cached"
+		    ></TextView>
+		
+	</RelativeLayout>
+	
+	<ImageView
+	    android:id="@+id/image1"
+	    android:layout_weight="0"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:layout_centerVertical="true"
+	    android:layout_marginRight="10dp"
+	    android:contentDescription="More..."
+	    android:src="@drawable/navigation_next_item" />
+
+</LinearLayout>

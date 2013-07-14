@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical|left"
+    android:background="#FFFFFF" 
+    android:clickable="false"
+    >
+
+	<EditText
+	    android:id="@+id/title"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:hint="Feed title"
+	    android:layout_alignParentLeft="true"
+	    android:layout_margin="10dp"
+	    android:ems="10" >
+	    <requestFocus />
+	</EditText>
+
+	<EditText
+	    android:id="@+id/url"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:hint="Feed URL"
+	    android:layout_below="@id/title"
+	    android:inputType="textUri"
+	    android:layout_margin="10dp"
+	    android:ems="7" />
+
+	<CheckBox
+	    android:id="@+id/downloadContent"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/url"
+	    android:layout_margin="10dp"
+	    android:text="Download web page in Wifi" 
+	    android:checked="true"/>
+
+	<CheckBox
+	    android:id="@+id/downloadImage"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/downloadContent"
+	    android:layout_margin="10dp"
+	    android:text="Download images" 
+	    android:checked="true" />
+	
+	<TextView
+	    android:id="@+id/retainForLabel"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:layout_below="@+id/downloadImage"
+	    android:text="Retain for 5 Days"
+	    android:layout_marginTop="10dp"
+	    android:layout_marginRight="10dp"
+	    android:layout_marginBottom="10dp"
+	    android:layout_marginLeft="20dp"
+	    android:textAppearance="?android:attr/textAppearanceMedium" />
+		
+	<SeekBar
+	    android:id="@+id/retainFor"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/downloadImage"
+	    android:layout_margin="10dp"
+	    android:layout_toRightOf="@+id/retainForLabel"
+	    android:contentDescription="Days"
+	    android:progress="5"
+	    android:max="30" />
+	
+	<Button
+	    android:id="@+id/save"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/retainFor"
+	    android:layout_alignParentRight="true"
+	    android:onClick="saveSubscription" 
+	    android:layout_marginTop="10dp"
+	    android:layout_marginRight="10dp"
+	    android:text="Save" />
+
+	<Button
+	    android:id="@+id/delete"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/retainFor"
+	    android:layout_toLeftOf="@+id/save"
+	    android:onClick="deleteSubscription"
+	    android:layout_marginTop="10dp"
+	    android:text="Delete" />
+
+
+</RelativeLayout>
