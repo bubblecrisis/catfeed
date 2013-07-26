@@ -3,7 +3,7 @@
 //
 
 
-package com.catfeed;
+package com.catfeed.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,8 +13,8 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import com.catfeed.R.layout;
 
-public final class WebSummaryActivity_
-    extends WebSummaryActivity
+public final class BrowseWebActivity_
+    extends BrowseWebActivity
 {
 
 
@@ -22,7 +22,7 @@ public final class WebSummaryActivity_
     public void onCreate(Bundle savedInstanceState) {
         init_(savedInstanceState);
         super.onCreate(savedInstanceState);
-        setContentView(layout.websummary);
+        setContentView(layout.webview);
     }
 
     private void init_(Bundle savedInstanceState) {
@@ -49,8 +49,8 @@ public final class WebSummaryActivity_
         afterSetContentView_();
     }
 
-    public static WebSummaryActivity_.IntentBuilder_ intent(Context context) {
-        return new WebSummaryActivity_.IntentBuilder_(context);
+    public static BrowseWebActivity_.IntentBuilder_ intent(Context context) {
+        return new BrowseWebActivity_.IntentBuilder_(context);
     }
 
     public static class IntentBuilder_ {
@@ -60,14 +60,14 @@ public final class WebSummaryActivity_
 
         public IntentBuilder_(Context context) {
             context_ = context;
-            intent_ = new Intent(context, WebSummaryActivity_.class);
+            intent_ = new Intent(context, BrowseWebActivity_.class);
         }
 
         public Intent get() {
             return intent_;
         }
 
-        public WebSummaryActivity_.IntentBuilder_ flags(int flags) {
+        public BrowseWebActivity_.IntentBuilder_ flags(int flags) {
             intent_.setFlags(flags);
             return this;
         }

@@ -1,5 +1,7 @@
 package com.catfeed;
 
+import com.catfeed.constants.Constants;
+
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;

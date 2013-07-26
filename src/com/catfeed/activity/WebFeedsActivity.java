@@ -1,4 +1,4 @@
-package com.catfeed;
+package com.catfeed.activity;
 
 
 
@@ -25,11 +25,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 
+import com.catfeed.R;
 import com.catfeed.adaptor.WebFeedsAdaptor;
 import com.catfeed.async.RssAtomFeedRetriever;
 import com.catfeed.async.RssAtomFeedRetriever.ReceivedFeed;
 import com.catfeed.async.WebContentDownloader;
 import com.catfeed.async.postevent.FeedRefreshed;
+import com.catfeed.constants.Constants;
 import com.catfeed.db.Repository;
 import com.catfeed.model.Subscription;
 import com.catfeed.model.WebFeed;

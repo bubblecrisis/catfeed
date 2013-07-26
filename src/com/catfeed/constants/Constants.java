@@ -1,4 +1,4 @@
-package com.catfeed;
+package com.catfeed.constants;
 
 public class Constants {
 

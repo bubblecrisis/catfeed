@@ -29,7 +29,7 @@
 		/>
 	        
         <activity
-            android:name="com.catfeed.SubscriptionsActivity_"
+            android:name="com.catfeed.activity.SubscriptionsActivity_"
             android:label="@string/app_name" 
             android:configChanges="orientation|screenSize"
             >
@@ -68,35 +68,35 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.catfeed.SubscriptionEditActivity_"
+            android:name="com.catfeed.activity.SubscriptionEditActivity_"
             android:label="Edit Subscription"
-            android:parentActivityName="com.catfeed.SubscriptionsActivity_" >
+            android:parentActivityName="com.catfeed.activity.SubscriptionsActivity_" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SubscriptionsActivity_" />
         </activity>  
         <activity
-            android:name="com.catfeed.WebFeedsActivity_"
+            android:name="com.catfeed.activity.WebFeedsActivity_"
             android:label="Browse Feeds"
             android:launchMode="singleTop"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName="com.catfeed.SubscriptionsActivity_" >
+            android:parentActivityName="com.catfeed.activity.SubscriptionsActivity_" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SubscriptionsActivity_" />
         </activity>          
         <activity
-            android:name="com.catfeed.WebSummaryActivity_"
+            android:name="com.catfeed.activity.WebSummaryActivity_"
             android:label="Browse Summary"
-            android:parentActivityName="com.catfeed.WebFeedsActivity_" >
+            android:parentActivityName="com.catfeed.activity.WebFeedsActivity_" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".WebFeedsActivity_" />
         </activity> 
         <activity
-            android:name="com.catfeed.BrowseWebActivity_"
+            android:name="com.catfeed.activity.BrowseWebActivity_"
             android:label="Browse Web"
-            android:parentActivityName="com.catfeed.WebFeedsActivity_" >
+            android:parentActivityName="com.catfeed.activity.WebFeedsActivity_" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".WebFeedsActivity_" />

@@ -1,4 +1,4 @@
-package com.catfeed;
+package com.catfeed.activity;
 
 import utils.Dialog;
 import utils.IOUtils;
@@ -14,6 +14,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
+import com.catfeed.R;
+import com.catfeed.constants.Constants;
 import com.catfeed.db.Repository;
 import com.catfeed.model.WebFeed;
 import com.googlecode.androidannotations.annotations.EActivity;

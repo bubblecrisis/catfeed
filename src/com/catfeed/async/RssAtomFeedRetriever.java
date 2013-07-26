@@ -8,7 +8,7 @@ import utils.Notifier;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.catfeed.Constants;
+import com.catfeed.constants.Constants;
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndFeed;
 import com.google.code.rome.android.repackaged.com.sun.syndication.fetcher.FeedFetcher;
 import com.google.code.rome.android.repackaged.com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;

@@ -16,9 +16,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
 
-import com.catfeed.Constants;
-import com.catfeed.SubscriptionsActivity;
 import com.catfeed.R;
+import com.catfeed.activity.SubscriptionsActivity;
+import com.catfeed.constants.Constants;
 
 public class Repository extends SQLiteOpenHelper {
 
@@ -295,6 +295,16 @@ public class Repository extends SQLiteOpenHelper {
 	public Integer count(Class modelClass) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor c = db.rawQuery("select count(*) from " + table(modelClass), new String[] {});
+		c.moveToFirst();
+		int count = c.getInt(0);
+		c.close();
+		db.close();
+		return count;
+	}
+	
+	public Integer countBy(Class modelClass, String where, String... criteria) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.rawQuery("select count(*) from " + table(modelClass) + " where " + where, criteria);
 		c.moveToFirst();
 		int count = c.getInt(0);
 		c.close();

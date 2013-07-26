@@ -7,7 +7,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.catfeed.Constants;
+import com.catfeed.constants.Constants;
 
 import utils.Http.Response;
 import android.os.AsyncTask;

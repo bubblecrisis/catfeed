@@ -1,7 +1,7 @@
-package com.catfeed;
+package com.catfeed.activity;
 
 import static android.widget.CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER;
-import static com.catfeed.Constants.FLKR_ID;
+import static com.catfeed.constants.Constants.FLKR_ID;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +15,6 @@ import utils.CursorUtils;
 import utils.F;
 import utils.FragmentUtils;
 import utils.ListPosition;
-import utils.ScreenUtils;
 import android.app.Fragment;
 import android.app.ListActivity;
 import android.app.LoaderManager;
@@ -24,8 +23,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,13 +34,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import com.catfeed.R;
 import com.catfeed.async.RssAtomFeedRetriever;
 import com.catfeed.async.WebContentDownloader;
 import com.catfeed.async.postevent.FeedRefreshed;
 import com.catfeed.async.postevent.Subscribed;
+import com.catfeed.constants.Constants;
 import com.catfeed.db.Repository;
 import com.catfeed.model.Subscription;
 import com.catfeed.provider.CatFeedContentProvider;
+import com.catfeed.view.CacheReadChartView;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.UiThread;
@@ -98,42 +98,45 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 				arrow.setImageResource(editMode? R.drawable.content_edit_item: R.drawable.navigation_next_item);	
 				
 				// Get a search keyword from title
-				byte[] image = CursorUtils.getBlob(cursor, "icon");
-				ImageView background = (ImageView) view.findViewById(R.id.background);		
+				//byte[] image = CursorUtils.getBlob(cursor, "icon");
+				CacheReadChartView cacheReadView = (CacheReadChartView) view.findViewById(R.id.background);		
 				
-				if (image == null) {
-					String title = CursorUtils.getString(cursor, "title");
-//					int r = title.substring(0, 1).hashCode() % 250;
-//					int b = title.substring(1, 2).hashCode() % 250;
-//					int g = title.substring(3, 3).hashCode() % 250;
+				// Be creative and set colour based on title's hash
+				String title = CursorUtils.getString(cursor, "title");
+				cacheReadView.randomizeColourScheme(title.hashCode());				
+//				if (image == null) {
+//					String title = CursorUtils.getString(cursor, "title");
+////					int r = title.substring(0, 1).hashCode() % 250;
+////					int b = title.substring(1, 2).hashCode() % 250;
+////					int g = title.substring(3, 3).hashCode() % 250;
+////					
+////					Bitmap bitmap = Bitmap.createBitmap(100, 100, Config.RGB_565);
+////					Canvas canvas = new Canvas(bitmap);
+////					Paint paint = new Paint(); 
+////					paint.setColor(Color.WHITE);
+////					canvas.drawPaint(paint);
+////					paint.setTextSize(100); 
+////					paint.setColor(Color.rgb(r, g, b));
+////					paint.setAlpha(120);
+////					paint.setTypeface(Typeface.DEFAULT_BOLD);
+////					paint.setAntiAlias(true);						
+////					canvas.drawText(title, 20, 120, paint); 
+////					background.setImageBitmap(bitmap);
 //					
-//					Bitmap bitmap = Bitmap.createBitmap(100, 100, Config.RGB_565);
-//					Canvas canvas = new Canvas(bitmap);
-//					Paint paint = new Paint(); 
-//					paint.setColor(Color.WHITE);
-//					canvas.drawPaint(paint);
-//					paint.setTextSize(100); 
-//					paint.setColor(Color.rgb(r, g, b));
-//					paint.setAlpha(120);
-//					paint.setTypeface(Typeface.DEFAULT_BOLD);
-//					paint.setAntiAlias(true);						
-//					canvas.drawText(title, 20, 120, paint); 
-//					background.setImageBitmap(bitmap);
-					
-					Long id = CursorUtils.getLong(cursor, "_id");
-					fetchFlickrImage(context, id, flickerSearchKeywordFromTitle(title));
-				}
-				if (image != null) {					
-					Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
-					int square = (int) ScreenUtils.convertDpToPixel(55, context);
-					int width = (bitmap.getWidth() > square)? square: bitmap.getWidth();
-					int height = (bitmap.getHeight() > square)? square: bitmap.getHeight();
-					int x = (bitmap.getWidth() - width) /2;
-					int y = (bitmap.getHeight() - height) /2;
-					System.err.println("size -> " + height);
-					bitmap = Bitmap.createBitmap(bitmap, x , y, width, height);
-					background.setImageBitmap(bitmap);						
-				}
+//					Long id = CursorUtils.getLong(cursor, "_id");
+//					fetchFlickrImage(context, id, flickerSearchKeywordFromTitle(title));
+//				}
+//				if (image != null) {					
+//					Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+//					int square = (int) ScreenUtils.convertDpToPixel(55, context);
+//					int width = (bitmap.getWidth() > square)? square: bitmap.getWidth();
+//					int height = (bitmap.getHeight() > square)? square: bitmap.getHeight();
+//					int x = (bitmap.getWidth() - width) /2;
+//					int y = (bitmap.getHeight() - height) /2;
+//					System.err.println("size -> " + height);
+//					bitmap = Bitmap.createBitmap(bitmap, x , y, width, height);
+//					background.setImageBitmap(bitmap);						
+//				}
 				
 			}
 			

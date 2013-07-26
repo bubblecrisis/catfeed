@@ -3,7 +3,7 @@
 //
 
 
-package com.catfeed;
+package com.catfeed.activity;
 
 import android.app.Activity;
 import android.content.Context;

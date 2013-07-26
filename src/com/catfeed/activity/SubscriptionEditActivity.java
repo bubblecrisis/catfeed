@@ -1,6 +1,6 @@
-package com.catfeed;
+package com.catfeed.activity;
 
-import static com.catfeed.Constants.LOGTAG;
+import static com.catfeed.constants.Constants.LOGTAG;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +9,8 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.catfeed.R.id;
+import com.catfeed.R.layout;
 import com.catfeed.db.Repository;
 import com.catfeed.model.Subscription;
 import com.catfeed.model.WebFeed;

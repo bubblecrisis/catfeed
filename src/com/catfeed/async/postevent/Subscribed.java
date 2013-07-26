@@ -1,26 +1,25 @@
 package com.catfeed.async.postevent;
 
-import static com.catfeed.Constants.LOGTAG;
+import static com.catfeed.constants.Constants.LOGTAG;
 
 import java.util.List;
 
 import utils.Dialog;
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.util.Log;
 
-import com.catfeed.Constants;
-import com.catfeed.async.SubscriptionIconDownloader;
+import com.catfeed.activity.WebFeedsActivity_;
 import com.catfeed.async.RssAtomFeedRetriever.ReceivedFeed;
 import com.catfeed.async.RssAtomFeedRetriever.RssAtomReceived;
+import com.catfeed.async.SubscriptionIconDownloader;
+import com.catfeed.constants.Constants;
 import com.catfeed.db.Repository;
 import com.catfeed.model.Subscription;
 import com.catfeed.model.WebFeed;
 import com.catfeed.provider.CatFeedContentProvider;
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndEntry;
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndImage;
-import com.catfeed.WebFeedsActivity_;
 
 public class Subscribed implements RssAtomReceived {
 	

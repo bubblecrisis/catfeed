@@ -18,7 +18,7 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.catfeed.Constants;
+import com.catfeed.constants.Constants;
 import com.catfeed.db.Repository;
 import com.catfeed.model.WebFeed;
 

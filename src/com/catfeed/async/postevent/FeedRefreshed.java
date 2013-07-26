@@ -14,11 +14,11 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.util.Log;
 
-import com.catfeed.Constants;
 import com.catfeed.async.RssAtomFeedRetriever;
 import com.catfeed.async.WebContentDownloader;
 import com.catfeed.async.RssAtomFeedRetriever.ReceivedFeed;
 import com.catfeed.async.RssAtomFeedRetriever.RssAtomReceived;
+import com.catfeed.constants.Constants;
 import com.catfeed.db.Repository;
 import com.catfeed.model.Subscription;
 import com.catfeed.model.WebFeed;

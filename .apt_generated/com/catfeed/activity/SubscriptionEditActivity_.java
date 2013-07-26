@@ -3,7 +3,7 @@
 //
 
 
-package com.catfeed;
+package com.catfeed.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -36,10 +36,10 @@ public final class SubscriptionEditActivity_
     private void afterSetContentView_() {
         retainForLabel = ((TextView) findViewById(id.retainForLabel));
         retainFor = ((SeekBar) findViewById(id.retainFor));
-        downloadImage = ((CheckBox) findViewById(id.downloadImage));
         url = ((TextView) findViewById(id.url));
         downloadContent = ((CheckBox) findViewById(id.downloadContent));
         title = ((TextView) findViewById(id.title));
+        downloadImage = ((CheckBox) findViewById(id.downloadImage));
         {
             final SeekBar view = ((SeekBar) findViewById(id.retainFor));
             if (view!= null) {
