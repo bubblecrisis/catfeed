@@ -1,9 +1,10 @@
 package com.catfeed.model;
 
 import utils.Entity;
+import utils.Progress;
 import android.content.ContentValues;
 
-import com.catfeed.async.RssAtomFeedRetriever;
+import com.catfeed.RssFeeder;
 import com.catfeed.db.Repository;
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndFeed;
 
@@ -23,17 +24,6 @@ public class Subscription {
 	public Subscription(String rssUrl, SyndFeed feed) {
 		this.title = feed.getTitle();
 		this.url = rssUrl;
-	}
-	
-	/**
-	 * Subscribe to a RSS url.
-	 * @param repository
-	 * @param url
-	 * @return
-	 */
-	public static void subscribe(String rssUrl, RssAtomFeedRetriever.RssAtomReceived callback) {
-		RssAtomFeedRetriever feedRetriever = new RssAtomFeedRetriever(callback);
-	    feedRetriever.execute(rssUrl);
 	}
 
 	public static Subscription findById(Repository repository, Long id) {
@@ -55,12 +45,11 @@ public class Subscription {
 	/**
 	 * Refresh a {@link Subscription} by deleting all the {@link WebFeed} and reloading a new
 	 * set from {@link SyndFeed}.
-	 * @param repository
+	 * @param progress
 	 * @param feed
 	 */
-	public void refresh(Repository repository, RssAtomFeedRetriever.RssAtomReceived callback) {
-		RssAtomFeedRetriever feedRetriever = new RssAtomFeedRetriever(callback);
-	    feedRetriever.execute(this.url);
+	public void refresh(RssFeeder rss, Progress progress) {
+		rss.refresh(progress, this.url);
 	}
 	
 	/**

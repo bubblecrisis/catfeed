@@ -1,7 +1,5 @@
 package com.catfeed.view;
 
-import utils.CursorUtils;
-import utils.ScreenUtils;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,6 +8,9 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
+/**
+ * View for displaying a pie chart on the main screen.
+ */
 public class CacheReadChartView extends View 
 {        
     private static Paint paint;  

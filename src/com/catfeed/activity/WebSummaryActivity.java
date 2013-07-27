@@ -14,11 +14,20 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
+import com.catfeed.CatFeedApp;
+import com.catfeed.Constants;
 import com.catfeed.R;
-import com.catfeed.constants.Constants;
+import com.catfeed.RssFeeder;
 import com.catfeed.db.Repository;
 import com.catfeed.model.WebFeed;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.App;
+import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.Extra;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.ViewById;
 
 /**
  * An activity representing a list of WebFeeds. This activity has different
@@ -36,26 +45,35 @@ import com.googlecode.androidannotations.annotations.EActivity;
  * {@link SubscriptionsFragment.Callbacks} interface to listen for item
  * selections.
  */
+@OptionsMenu(R.menu.websummary)
 @EActivity(R.layout.websummary)
 public class WebSummaryActivity extends Activity 
 {	
-	private Long id;
+	@App
+	CatFeedApp application;
+	
+	@Bean
+	RssFeeder rss;
+	
+	@Bean
+	Repository repository;
+
+	@Extra
+	Long feedId;
+	
+	@Extra
+	String subscriptionTitle;
+	
+	@ViewById
+	TextView title;
+	
 	private WebFeed feed;
 //	private SwipeDetector swipeDetector;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Long id = getIntent().getExtras().getLong(Constants.FEED_ID);
-		String title = getIntent().getExtras().getString(Constants.SUBSCRIPTION_TITLE);
-		
-		Repository repository = Repository.getRepository(this);
-		feed = repository.findById(WebFeed.class, id);	
-		this.id = feed._id;		
-
-		// Set title
-		ActionBar ab = getActionBar();
-		ab.setTitle(title);			
+		feed = repository.findById(WebFeed.class, feedId);	
 
 //		// Handle Gesture
 //		swipeDetector = new SwipeDetector() {
@@ -70,31 +88,37 @@ public class WebSummaryActivity extends Activity
 //		};
 	}
 	
+	/**
+	 * Set View
+	 */
+	@AfterViews
+	void prepopulate() {
+		ActionBar ab = getActionBar();
+		ab.setTitle(subscriptionTitle);	
+	}
+	
 	@Override
 	protected void onStart() {
 		super.onStart();
 		
-		TextView text = (TextView) findViewById(R.id.title);
-		text.setText(feed.title);
+		title.setText(feed.title);
 //		text.setOnTouchListener(swipeDetector);
 
 		if (feed.summary != null) {
-			WebView webview = (WebView) findViewById(R.id.websummary);
-			webview.setWebViewClient(new MyWebViewClient());
-			webview.getSettings().setSupportZoom(true);
-			webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
-			webview.getSettings().setAllowFileAccess(false);
-			webview.getSettings().setDomStorageEnabled(false);
-//			webview.setOnTouchListener(swipeDetector);
-			webview.loadData(feed.summary, "text/html", "utf-8");	
+			WebView websummary = (WebView) findViewById(R.id.websummary);
+			websummary.setWebViewClient(new MyWebViewClient());
+			websummary.getSettings().setSupportZoom(true);
+			websummary.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
+			websummary.getSettings().setAllowFileAccess(false);
+			websummary.getSettings().setDomStorageEnabled(false);
+//			websummary.setOnTouchListener(swipeDetector);
+			websummary.loadData(feed.summary, "text/html", "utf-8");	
 			
 			// Mark article as read
 			if (feed.dateread == 0) {
 				feed.markAsRead(Repository.getRepository(this));
 			}
 		}
-		
-		
 	}
 
 	public class MyWebViewClient extends WebViewClient {
@@ -109,31 +133,16 @@ public class WebSummaryActivity extends Activity
 	//--------------------------------------------------------------------------------------------------
 	// MENU - Requires setHasOptionsMenu(true);
 	//--------------------------------------------------------------------------------------------------
-	
-	/**
-	 * Make sure to set setHasOptionsMenu(true);
-	 */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater menuInflator = getMenuInflater();
-		menuInflator.inflate(R.menu.websummary, menu);
-		return true;
-	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-	   	   switch (item.getItemId()) {
-		    case R.id.menuitem_search:
-		    	browseWeb();
-				return true;
-		    }
-		    return super.onOptionsItemSelected(item);
-	}
+	@OptionsItem(R.id.menuitem_search)
+    void searchMenuClicked() {
+		browseWeb();
+    }
 
 	private void browseWeb() {
 		if (IOUtils.isNetworkAvailable(this) || feed.body != null) {
 			Intent intent = new Intent(this, BrowseWebActivity_.class);
-		    intent.putExtra(Constants.FEED_ID, id);
+		    intent.putExtra(Constants.FEED_ID, feedId);
 		    startActivity(intent);			
 		}
 		else {

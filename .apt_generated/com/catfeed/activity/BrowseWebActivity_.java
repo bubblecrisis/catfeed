@@ -5,13 +5,18 @@
 
 package com.catfeed.activity;
 
+import java.io.Serializable;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.webkit.WebView;
+import com.catfeed.R.id;
 import com.catfeed.R.layout;
+import com.catfeed.db.Repository_;
 
 public final class BrowseWebActivity_
     extends BrowseWebActivity
@@ -26,9 +31,14 @@ public final class BrowseWebActivity_
     }
 
     private void init_(Bundle savedInstanceState) {
+        injectExtras_();
+        repository = Repository_.getInstance_(this);
     }
 
     private void afterSetContentView_() {
+        webview = ((WebView) findViewById(id.webview));
+        ((Repository_) repository).afterSetContentView_();
+        setTitle();
     }
 
     @Override
@@ -51,6 +61,31 @@ public final class BrowseWebActivity_
 
     public static BrowseWebActivity_.IntentBuilder_ intent(Context context) {
         return new BrowseWebActivity_.IntentBuilder_(context);
+    }
+
+    @SuppressWarnings("unchecked")
+    private<T >T cast_(Object object) {
+        return ((T) object);
+    }
+
+    private void injectExtras_() {
+        Intent intent_ = getIntent();
+        Bundle extras_ = intent_.getExtras();
+        if (extras_!= null) {
+            if (extras_.containsKey("feedId")) {
+                try {
+                    feedId = cast_(extras_.get("feedId"));
+                } catch (ClassCastException e) {
+                    Log.e("BrowseWebActivity_", "Could not cast extra to expected type, the field is left to its default value", e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void setIntent(Intent newIntent) {
+        super.setIntent(newIntent);
+        injectExtras_();
     }
 
     public static class IntentBuilder_ {
@@ -82,6 +117,11 @@ public final class BrowseWebActivity_
             } else {
                 context_.startActivity(intent_);
             }
+        }
+
+        public BrowseWebActivity_.IntentBuilder_ feedId(Long feedId) {
+            intent_.putExtra("feedId", ((Serializable) feedId));
+            return this;
         }
 
     }

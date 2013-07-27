@@ -5,18 +5,29 @@
 
 package com.catfeed.activity;
 
+import java.io.Serializable;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import com.catfeed.CatFeedApp;
+import com.catfeed.R.id;
 import com.catfeed.R.layout;
+import com.catfeed.RssFeeder_;
+import com.catfeed.db.Repository_;
 
 public final class WebFeedsActivity_
     extends WebFeedsActivity
 {
 
+    private Handler handler_ = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,9 +37,16 @@ public final class WebFeedsActivity_
     }
 
     private void init_(Bundle savedInstanceState) {
+        injectExtras_();
+        application = ((CatFeedApp) this.getApplication());
+        rss = RssFeeder_.getInstance_(this);
+        repository = Repository_.getInstance_(this);
     }
 
     private void afterSetContentView_() {
+        ((RssFeeder_) rss).afterSetContentView_();
+        ((Repository_) repository).afterSetContentView_();
+        prepopulate();
     }
 
     @Override
@@ -51,6 +69,70 @@ public final class WebFeedsActivity_
 
     public static WebFeedsActivity_.IntentBuilder_ intent(Context context) {
         return new WebFeedsActivity_.IntentBuilder_(context);
+    }
+
+    @SuppressWarnings("unchecked")
+    private<T >T cast_(Object object) {
+        return ((T) object);
+    }
+
+    private void injectExtras_() {
+        Intent intent_ = getIntent();
+        Bundle extras_ = intent_.getExtras();
+        if (extras_!= null) {
+            if (extras_.containsKey("subscriptionId")) {
+                try {
+                    subscriptionId = cast_(extras_.get("subscriptionId"));
+                } catch (ClassCastException e) {
+                    Log.e("WebFeedsActivity_", "Could not cast extra to expected type, the field is left to its default value", e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void setIntent(Intent newIntent) {
+        super.setIntent(newIntent);
+        injectExtras_();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(com.catfeed.R.menu.webfeeds, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean handled = super.onOptionsItemSelected(item);
+        if (handled) {
+            return true;
+        }
+        int itemId_ = item.getItemId();
+        if (itemId_ == id.menuitem_refresh) {
+            menuRefresh(item);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void updateSubtitle() {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    WebFeedsActivity_.super.updateSubtitle();
+                } catch (RuntimeException e) {
+                    Log.e("WebFeedsActivity_", "A runtime exception was thrown while executing code in a runnable", e);
+                }
+            }
+
+        }
+        );
     }
 
     public static class IntentBuilder_ {
@@ -82,6 +164,11 @@ public final class WebFeedsActivity_
             } else {
                 context_.startActivity(intent_);
             }
+        }
+
+        public WebFeedsActivity_.IntentBuilder_ subscriptionId(Long subscriptionId) {
+            intent_.putExtra("subscriptionId", ((Serializable) subscriptionId));
+            return this;
         }
 
     }

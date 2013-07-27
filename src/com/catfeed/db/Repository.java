@@ -16,10 +16,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
 
+import com.catfeed.Constants;
 import com.catfeed.R;
-import com.catfeed.activity.SubscriptionsActivity;
-import com.catfeed.constants.Constants;
+import com.googlecode.androidannotations.annotations.EBean;
+import com.googlecode.androidannotations.api.Scope;
 
+@EBean(scope = Scope.Singleton)
 public class Repository extends SQLiteOpenHelper {
 
 	// All Static variables

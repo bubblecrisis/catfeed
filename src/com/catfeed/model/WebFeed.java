@@ -6,17 +6,14 @@ import java.util.List;
 
 import utils.CursorUtils;
 import utils.Entity;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.catfeed.async.RssAtomFeedRetriever;
 import com.catfeed.db.Repository;
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndCategory;
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndContent;
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndEntry;
-import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndFeed;
 
 @Entity
 public class WebFeed {

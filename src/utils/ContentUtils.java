@@ -3,7 +3,7 @@ package utils;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-import com.catfeed.constants.Constants;
+import com.catfeed.Constants;
 
 import android.content.ContentValues;
 import android.util.Log;

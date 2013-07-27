@@ -9,19 +9,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import com.catfeed.CatFeedApp;
 import com.catfeed.R.layout;
+import com.catfeed.RssFeeder_;
+import com.catfeed.db.Repository_;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
-import com.googlecode.flickrjandroid.photos.Photo;
 
 public final class SubscriptionsActivity_
     extends SubscriptionsActivity
 {
 
-    private Handler handler_ = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,9 +34,14 @@ public final class SubscriptionsActivity_
     }
 
     private void init_(Bundle savedInstanceState) {
+        application = ((CatFeedApp) this.getApplication());
+        repository = Repository_.getInstance_(this);
+        rss = RssFeeder_.getInstance_(this);
     }
 
     private void afterSetContentView_() {
+        ((Repository_) repository).afterSetContentView_();
+        ((RssFeeder_) rss).afterSetContentView_();
     }
 
     @Override
@@ -59,21 +67,28 @@ public final class SubscriptionsActivity_
     }
 
     @Override
-    public void updateSubscriptionImage(final Photo photo) {
-        handler_.post(new Runnable() {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(com.catfeed.R.menu.subscription, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-
-            @Override
-            public void run() {
-                try {
-                    SubscriptionsActivity_.super.updateSubscriptionImage(photo);
-                } catch (RuntimeException e) {
-                    Log.e("SubscriptionsActivity_", "A runtime exception was thrown while executing code in a runnable", e);
-                }
-            }
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean handled = super.onOptionsItemSelected(item);
+        if (handled) {
+            return true;
         }
-        );
+        int itemId_ = item.getItemId();
+        if (itemId_ == com.catfeed.R.id.menuitem_edit) {
+            editMenuItemClicked();
+            return true;
+        }
+        if (itemId_ == com.catfeed.R.id.menuitem_refresh) {
+            refreshMenuItemClicked();
+            return true;
+        }
+        return false;
     }
 
     @Override

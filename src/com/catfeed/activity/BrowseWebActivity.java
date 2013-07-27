@@ -9,19 +9,19 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.catfeed.constants.Constants;
+import com.catfeed.Constants;
+import com.catfeed.R;
 import com.catfeed.db.Repository;
 import com.catfeed.model.WebFeed;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EActivity;
-import com.catfeed.R;
-import com.catfeed.R.id;
-import com.catfeed.R.layout;
+import com.googlecode.androidannotations.annotations.Extra;
+import com.googlecode.androidannotations.annotations.ViewById;
 
 /**
  * An activity representing a list of WebFeeds. This activity has different
@@ -42,29 +42,35 @@ import com.catfeed.R.layout;
 @EActivity(R.layout.webview)
 public class BrowseWebActivity extends Activity 
 {	
-	private Long id;
+	@Extra
+	Long feedId;
 	private WebFeed feed;
+	
+	@Bean
+	Repository repository;
+	
+	@ViewById
+	WebView webview;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Long id = getIntent().getExtras().getLong(Constants.FEED_ID);
-
-		Repository repository = Repository.getRepository(this);
-		feed = repository.findById(WebFeed.class, id);	
-		this.id = feed._id;		
-		
-		// Set title
-		ActionBar ab = getActionBar();
-		ab.setTitle(feed.title);			
+		feed = repository.findById(WebFeed.class, feedId);
 	}
 	
-		@Override
+	/**
+	 * Set screen title
+	 */
+	@AfterViews
+	void setTitle() {
+		ActionBar ab = getActionBar();
+		ab.setTitle(feed.title);				
+	}
+	
+	@Override
 	protected void onStart() {
 		super.onStart();
-		
-		WebView webview = (WebView) findViewById(R.id.webview);
-	    webview.setWebViewClient(new MyWebViewClient());
+		webview.setWebViewClient(new MyWebViewClient());
 	    WebSettings settings = webview.getSettings();
 	    settings.setSupportZoom(true);
 	    settings.setJavaScriptCanOpenWindowsAutomatically(true);

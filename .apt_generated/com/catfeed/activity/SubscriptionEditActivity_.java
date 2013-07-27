@@ -9,7 +9,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
@@ -34,12 +37,88 @@ public final class SubscriptionEditActivity_
     }
 
     private void afterSetContentView_() {
+        url = ((TextView) findViewById(id.url));
+        downloadImage = ((CheckBox) findViewById(id.downloadImage));
+        title = ((TextView) findViewById(id.title));
         retainForLabel = ((TextView) findViewById(id.retainForLabel));
         retainFor = ((SeekBar) findViewById(id.retainFor));
-        url = ((TextView) findViewById(id.url));
         downloadContent = ((CheckBox) findViewById(id.downloadContent));
-        title = ((TextView) findViewById(id.title));
-        downloadImage = ((CheckBox) findViewById(id.downloadImage));
+        {
+            View view = findViewById(id.downloadImage);
+            if (view!= null) {
+                view.setOnClickListener(new OnClickListener() {
+
+
+                    @Override
+                    public void onClick(View view) {
+                        SubscriptionEditActivity_.this.downloadImage();
+                    }
+
+                }
+                );
+            }
+        }
+        {
+            View view = findViewById(id.downloadContent);
+            if (view!= null) {
+                view.setOnClickListener(new OnClickListener() {
+
+
+                    @Override
+                    public void onClick(View view) {
+                        SubscriptionEditActivity_.this.downloadContent();
+                    }
+
+                }
+                );
+            }
+        }
+        {
+            final TextView view = ((TextView) findViewById(id.url));
+            if (view!= null) {
+                view.addTextChangedListener(new TextWatcher() {
+
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        SubscriptionEditActivity_.this.urlAfterTextChanged(view);
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                }
+                );
+            }
+        }
+        {
+            final TextView view = ((TextView) findViewById(id.title));
+            if (view!= null) {
+                view.addTextChangedListener(new TextWatcher() {
+
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        SubscriptionEditActivity_.this.titleAfterTextChanged(view);
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                }
+                );
+            }
+        }
         {
             final SeekBar view = ((SeekBar) findViewById(id.retainFor));
             if (view!= null) {
@@ -63,6 +142,7 @@ public final class SubscriptionEditActivity_
                 );
             }
         }
+        prepopulate();
     }
 
     @Override
