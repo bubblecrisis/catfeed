@@ -13,8 +13,8 @@ public final class CatFeedApp_
 
 
     private void init_() {
-        repository = Repository_.getInstance_(this);
         rss = RssFeeder_.getInstance_(this);
+        repository = Repository_.getInstance_(this);
     }
 
     @Override

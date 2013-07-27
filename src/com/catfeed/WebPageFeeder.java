@@ -19,7 +19,9 @@ import android.net.ConnectivityManager;
 import android.util.Log;
 
 import com.catfeed.db.Repository;
+import com.catfeed.model.Subscription;
 import com.catfeed.model.WebFeed;
+import com.googlecode.androidannotations.annotations.App;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EBean;
@@ -34,25 +36,31 @@ public class WebPageFeeder {
 	// Only injected if the root context is an activity
 	Activity activity;
 	
+	@App
+	CatFeedApp application;
+	
 	@Bean
 	Repository repository;
 
 	@Background
-	void download(ContentResolver content, Progress refreshing, String... urls) {
+	void download(ContentResolver content, Progress refreshing, Long subscriptionId, String... urls) {
 		try {
-			fetchPage(content, urls);
+			fetchPages(content, subscriptionId, urls);
 		} finally {
 			refreshing.countdown();
 		}
 	}
 	
-	public void fetchPage(ContentResolver content, String... urls) {
+	public void fetchPages(ContentResolver content, Long subscriptionId, String... urls) {
 		ConnectivityManager connectivity = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		try {
 			for (String url : urls) {
 				// Only download content if we are in wifi
 				if (isWifiConntected(connectivity)) {
 					downloadContent(content, url);
+					Subscription subscription = application.getSubscription(subscriptionId);
+					subscription.increaseCachedBy(1);
+					application.notifyObservers();
 				} else {
 					Log.d(Constants.LOGTAG,"No wifi connection. Not downloading " + url);
 				}

@@ -39,12 +39,12 @@ public final class SubscriptionEditActivity_
     }
 
     private void afterSetContentView_() {
-        downloadImage = ((CheckBox) findViewById(id.downloadImage));
-        url = ((TextView) findViewById(id.url));
         retainFor = ((SeekBar) findViewById(id.retainFor));
-        downloadContent = ((CheckBox) findViewById(id.downloadContent));
+        downloadImage = ((CheckBox) findViewById(id.downloadImage));
         title = ((TextView) findViewById(id.title));
         retainForLabel = ((TextView) findViewById(id.retainForLabel));
+        downloadContent = ((CheckBox) findViewById(id.downloadContent));
+        url = ((TextView) findViewById(id.url));
         {
             View view = findViewById(id.downloadContent);
             if (view!= null) {
@@ -76,14 +76,14 @@ public final class SubscriptionEditActivity_
             }
         }
         {
-            final TextView view = ((TextView) findViewById(id.url));
+            final TextView view = ((TextView) findViewById(id.title));
             if (view!= null) {
                 view.addTextChangedListener(new TextWatcher() {
 
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        SubscriptionEditActivity_.this.urlAfterTextChanged(view);
+                        SubscriptionEditActivity_.this.titleAfterTextChanged(view);
                     }
 
                     @Override
@@ -99,14 +99,14 @@ public final class SubscriptionEditActivity_
             }
         }
         {
-            final TextView view = ((TextView) findViewById(id.title));
+            final TextView view = ((TextView) findViewById(id.url));
             if (view!= null) {
                 view.addTextChangedListener(new TextWatcher() {
 
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        SubscriptionEditActivity_.this.titleAfterTextChanged(view);
+                        SubscriptionEditActivity_.this.urlAfterTextChanged(view);
                     }
 
                     @Override

@@ -129,8 +129,8 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
 	public void onResume() {
 		super.onResume();
 		getLoaderManager().restartLoader(0, null, this /* Cursor loader callback */);
-		Repository repository = new Repository(this);
-		updateTitleCount(repository, subscription._id);	
+		subscription.calculateStatistics(application);
+		updateSubtitle();	
 	}
 	
 	@Override
@@ -234,10 +234,6 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
         // above is about to be closed.  We need to make sure we are no
         // longer using it.
         adaptor.swapCursor(null);
-	}
-
-	public void updateTitleCount(Repository repository, Long sub_id) {
-		updateSubtitle();
 	}
 
 	@UiThread

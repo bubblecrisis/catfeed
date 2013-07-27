@@ -227,7 +227,7 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 		// Detect RSS URL intent and subscribe to that URL.
 		if (getIntent().getAction().equals(Intent.ACTION_VIEW)) {
               String rssUrl = getIntent().getData().toString();
-              Log.d(Constants.LOGTAG, "Adding feed " + rssUrl);              
+              Log.d(Constants.LOGTAG, "Adding feed " + rssUrl); 
               rss.subscribe(null, rssUrl);
 		}
 		

@@ -1,9 +1,6 @@
 package com.catfeed.model;
 
-import java.util.Observer;
-
 import utils.Entity;
-import utils.Notifier;
 import utils.Progress;
 import android.content.ContentValues;
 
@@ -42,8 +39,9 @@ public class Subscription {
 	public static Subscription findById(CatFeedApp application, Long id) {
 		Subscription subscription = application.repository.findBy(Subscription.class, "_id=?", id.toString());	
 		if (subscription != null) {
-			subscription.calculateStatistics(application.repository);
-			subscription.application = application;			
+			subscription.calculateStatistics(application);
+			subscription.application = application;		
+			application.addSubscription(subscription);  // replaces existing instance
 		}
 		return subscription;
 	}
@@ -51,8 +49,9 @@ public class Subscription {
 	public static Subscription findByUrl(CatFeedApp application, String url) {
 		Subscription subscription =  application.repository.findBy(Subscription.class, "url=?", url);		
 		if (subscription != null) {
-			subscription.calculateStatistics(application.repository);
+			subscription.calculateStatistics(application);
 			subscription.application = application;			
+			application.addSubscription(subscription);  // replaces existing instance
 		}
 		return subscription;
 	}
@@ -119,10 +118,11 @@ public class Subscription {
 	// Page Statistics
 	//------------------------------------------------------------------------------------------------------
 	
-	public void calculateStatistics(Repository repository) {
-		noOfCachedArticles = WebFeed.countCached(repository, _id);
-		totalArticles = WebFeed.count(repository, _id);
-		unreadCount = WebFeed.countUnread(repository, _id);
+	public void calculateStatistics(CatFeedApp application) {
+		this.application = application;
+		noOfCachedArticles = WebFeed.countCached(application.repository, _id);
+		totalArticles = WebFeed.count(application.repository, _id);
+		unreadCount = WebFeed.countUnread(application.repository, _id);
 	}
 	
 	public void increaseArticlesBy(int increment) {

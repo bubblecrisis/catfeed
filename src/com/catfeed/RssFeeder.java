@@ -88,7 +88,7 @@ public class RssFeeder {
 			for (Long subscriptionId : updatedSubscriptionIds) {
 				List<String> urls = WebFeed.findUncachedUrlsBySubscription(repository, subscriptionId);
 				Log.i(Constants.LOGTAG, "Found " + urls.size() + " URLs to cached for subscription: " + subscriptionId);
-				webPageFeeder.fetchPage(activity.getContentResolver(), urls.toArray(new String[urls.size()]));
+				webPageFeeder.fetchPages(activity.getContentResolver(), subscriptionId, urls.toArray(new String[urls.size()]));
 				if (progress != null) progress.countdown();
 			}		
 		}
@@ -119,6 +119,7 @@ public class RssFeeder {
 			// Subscription id is -1 or 0 if there there is an error, including
 	        // duplicated subscription.
 			subscription._id = repository.add(subscription);  
+			
 			activity.getContentResolver().notifyChange(CatFeedContentProvider.table(Subscription.class.getName()), null);
 			
 			// Fetch subscription image
@@ -130,6 +131,7 @@ public class RssFeeder {
 			
 	    	// Only add feeds if subscription is added successfully
 	    	if (subscription._id > 0) {
+	    		application.addSubscription(subscription);
 	    		try {
 		        	for (SyndEntry entry: (List<SyndEntry>) feed.syndFeed.getEntries()) {
 		            	WebFeed webfeed = new WebFeed(entry, subscription._id);
@@ -140,10 +142,9 @@ public class RssFeeder {
 	    		catch(Exception e) {
 	    			Log.e(Constants.LOGTAG, "Error adding subscription webfeed " + subscription.title, e);
 	    		}
-	    		finally {
-	    			application.notifyObservers();
-	    		}
+	    		application.notifyObservers();
 	    	}
+	    	
 		}	
 		else {
 			Log.i(LOGTAG, "Subscription " + subscription.url + " already exists");

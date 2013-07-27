@@ -45,11 +45,12 @@ public final class WebPageFeeder_
     private void init_() {
         if (context_ instanceof Activity) {
             Activity activity = ((Activity) context_);
+            application = ((CatFeedApp) activity.getApplication());
         }
+        context = context_;
         if (context_ instanceof Activity) {
             activity = ((Activity) context_);
         }
-        context = context_;
         repository = Repository_.getInstance_(context_);
     }
 
@@ -63,14 +64,14 @@ public final class WebPageFeeder_
     }
 
     @Override
-    public void download(final ContentResolver content, final Progress refreshing, final String[] urls) {
+    public void download(final ContentResolver content, final Progress refreshing, final Long subscriptionId, final String[] urls) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    WebPageFeeder_.super.download(content, refreshing, urls);
+                    WebPageFeeder_.super.download(content, refreshing, subscriptionId, urls);
                 } catch (RuntimeException e) {
                     Log.e("WebPageFeeder_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

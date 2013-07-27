@@ -2,9 +2,10 @@ package com.catfeed;
 
 import static com.catfeed.Constants.LOGTAG;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observer;
 
 import utils.F;
@@ -12,7 +13,6 @@ import utils.Notifier;
 import utils.Progress;
 import android.app.Application;
 import android.util.Log;
-import android.view.View;
 
 import com.catfeed.db.Repository;
 import com.catfeed.model.Subscription;
@@ -23,7 +23,7 @@ import com.googlecode.androidannotations.annotations.EApplication;
 @EApplication
 public class CatFeedApp extends Application {
 
-	public List<Subscription> subscriptions = new ArrayList();
+	public Map<Long, Subscription> subscriptions = new HashMap();
 	
 	@Bean
 	public Repository repository;
@@ -39,8 +39,10 @@ public class CatFeedApp extends Application {
 	}
 	
 	public void loadSubscriptions() {
-		subscriptions.addAll(repository.all(Subscription.class));
-		calculateSubscriptionsStatistics();
+		for (Subscription sub: repository.all(Subscription.class)) {
+			sub.calculateStatistics(this);
+			subscriptions.put(sub._id, sub);
+		}
 	}
 	
 	/**
@@ -51,23 +53,27 @@ public class CatFeedApp extends Application {
 	 */
 	public void refreshAllSubscriptions(Progress progress) {
     	
-		Collection<String> urls = F.each(subscriptions, new F.Function<Subscription, String>() {
+		Collection<String> urls = F.each(subscriptions.values(), new F.Function<Subscription, String>() {
 			public String apply(Subscription subscription) {
 				return subscription.url;
 			}			
 		});
-		
 		rss.refresh(progress, urls.toArray(new String[urls.size()]));
 		calculateSubscriptionsStatistics();
 	}
 	
 	private void calculateSubscriptionsStatistics() {
-		F.each(subscriptions, new F.Function<Subscription, Void>() {
-			public Void apply(Subscription subscription) {
-				subscription.calculateStatistics(repository);
-				return null;
-			}			
-		});		
+		for (Subscription subscription: subscriptions.values()) {
+				subscription.calculateStatistics(this);
+		}		
+	}
+	
+	public void addSubscription(Subscription subscription) {
+		subscriptions.put(subscription._id, subscription);
+	}
+	
+	public Subscription getSubscription(Long id) {
+		return subscriptions.get(id);
 	}
 	
 	public void deleteSubscription(Subscription subscription) {
@@ -76,7 +82,7 @@ public class CatFeedApp extends Application {
 
 		repository.delete(Subscription.class, subscription._id);
 		Log.d(LOGTAG, "Deleted Subscription id " + subscription._id);
-		boolean removed = subscriptions.remove(subscription);
+		subscriptions.remove(subscription._id);
 	}
 	
 	//------------------------------------------------------------------------------------------------------
