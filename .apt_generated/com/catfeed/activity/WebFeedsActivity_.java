@@ -6,6 +6,7 @@
 package com.catfeed.activity;
 
 import java.io.Serializable;
+import java.util.Observable;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -118,14 +119,14 @@ public final class WebFeedsActivity_
     }
 
     @Override
-    public void updateSubtitle() {
+    public void update(final Observable observed, final Object eventObject) {
         handler_.post(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    WebFeedsActivity_.super.updateSubtitle();
+                    WebFeedsActivity_.super.update(observed, eventObject);
                 } catch (RuntimeException e) {
                     Log.e("WebFeedsActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

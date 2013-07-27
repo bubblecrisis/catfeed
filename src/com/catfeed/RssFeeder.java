@@ -137,12 +137,13 @@ public class RssFeeder {
 		            	WebFeed webfeed = new WebFeed(entry, subscription._id);
 		            	repository.add(webfeed);
 		            	subscription.increaseArticlesBy(1);
-		            }        	        			    			
+		        	}        
 	    		}
 	    		catch(Exception e) {
 	    			Log.e(Constants.LOGTAG, "Error adding subscription webfeed " + subscription.title, e);
 	    		}
-	    		application.notifyObservers();
+	        	subscription.resetUnreadCount();
+	        	application.notifyObservers();
 	    	}
 	    	
 		}	

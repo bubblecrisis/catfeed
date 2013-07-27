@@ -47,10 +47,10 @@ public final class WebPageFeeder_
             Activity activity = ((Activity) context_);
             application = ((CatFeedApp) activity.getApplication());
         }
-        context = context_;
         if (context_ instanceof Activity) {
             activity = ((Activity) context_);
         }
+        context = context_;
         repository = Repository_.getInstance_(context_);
     }
 

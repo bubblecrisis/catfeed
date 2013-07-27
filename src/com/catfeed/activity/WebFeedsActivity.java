@@ -78,7 +78,7 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
 //		}
 
 		// Load subscription information
-		subscription = Subscription.findById(application, subscriptionId);
+		subscription = application.getSubscription(subscriptionId);
 		Log.d(Constants.LOGTAG, "Loaded subscription " + subscriptionId + " into view");
 	}
 	
@@ -236,7 +236,6 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
         adaptor.swapCursor(null);
 	}
 
-	@UiThread
 	public void updateSubtitle() {
 		ActionBar ab = getActionBar();
 		ab.setSubtitle(subscription.getTotalArticles() + " articles | " + subscription.getUnreadCount() + " unread | " + subscription.getCachedPercentage() + "% cached");		
@@ -250,6 +249,7 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
      * Observer observing when RSS feeds is received and content is downloaded.
      */
 	@Override
+	@UiThread
 	public void update(Observable observed, Object eventObject) {
 		updateSubtitle();		
 	}

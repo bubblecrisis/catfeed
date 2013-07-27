@@ -24,10 +24,10 @@ public class WebFeed {
 	public String category;
 	public String summary;
 	public Long date;
-	public Long dateread;
+	public Long dateread = 0L;
 	public String contenttype;
 	public String body;
-	public Boolean cached;
+	public Boolean cached = false;
 	
 	public WebFeed() {
 	}    
@@ -41,6 +41,7 @@ public class WebFeed {
 		Date publishDate = entry.getPublishedDate();
 		if (publishDate == null) publishDate = new Date();
 		
+		this.dateread = 0L; // unread
     	this.date = publishDate.getTime();
     	this.title = entry.getTitle();
     	this.link = entry.getLink();

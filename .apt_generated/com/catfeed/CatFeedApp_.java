@@ -13,7 +13,6 @@ public final class CatFeedApp_
 
 
     private void init_() {
-        rss = RssFeeder_.getInstance_(this);
         repository = Repository_.getInstance_(this);
     }
 

@@ -2,6 +2,7 @@ package com.catfeed.activity;
 
 import static com.catfeed.Constants.FLKR_ID;
 
+import java.util.Collection;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
@@ -9,7 +10,9 @@ import java.util.Random;
 import org.apache.commons.io.IOUtils;
 
 import utils.CursorUtils;
+import utils.F;
 import utils.ListPosition;
+import utils.Progress;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.Context;
@@ -42,6 +45,7 @@ import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.googlecode.androidannotations.annotations.OptionsMenu;
+import com.googlecode.androidannotations.annotations.UiThread;
 import com.googlecode.flickrjandroid.Flickr;
 import com.googlecode.flickrjandroid.photos.Photo;
 import com.googlecode.flickrjandroid.photos.PhotoList;
@@ -89,13 +93,12 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 				ImageView arrow = (ImageView) view.findViewById(R.id.image1);				
 				arrow.setImageResource(editMode? R.drawable.content_edit_item: R.drawable.navigation_next_item);	
 				
-				// Get a search keyword from title
-				//byte[] image = CursorUtils.getBlob(cursor, "icon");
+				// Draw cache & unread pie chart
 				CacheReadChartView cacheReadView = (CacheReadChartView) view.findViewById(R.id.background);		
-				
-				// Be creative and set colour based on title's hash
-				String title = CursorUtils.getString(cursor, "title");
-				cacheReadView.randomizeColourScheme(title.hashCode());				
+				Subscription subscription = application.getSubscription(CursorUtils.getLong(cursor, "_id"));
+				cacheReadView.setSubscription(subscription);
+
+//				byte[] image = CursorUtils.getBlob(cursor, "icon");
 //				if (image == null) {
 //					String title = CursorUtils.getString(cursor, "title");
 ////					int r = title.substring(0, 1).hashCode() % 250;
@@ -265,9 +268,10 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 	@OptionsItem(R.id.menuitem_refresh)
     void refreshMenuItemClicked() {
 //		AnimatingItem animate = new AnimatingItem(item);
-		application.refreshAllSubscriptions(null);
+		application.refreshAllSubscriptions(rss, null);
     }
 
+	
 	//--------------------------------------------------------------------------------------------------
 	// Loader
 	//--------------------------------------------------------------------------------------------------
@@ -308,9 +312,9 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 	//--------------------------------------------------------------------------------------------------
 
 	@Override
+	@UiThread
 	public void update(Observable observable, Object arg1) {
-		// TODO Auto-generated method stub
-		System.err.println("update -> " + observable);
+		adaptor.notifyDataSetChanged(); 
 	}
 	
 	

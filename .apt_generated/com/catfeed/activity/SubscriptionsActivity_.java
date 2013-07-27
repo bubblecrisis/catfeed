@@ -5,10 +5,12 @@
 
 package com.catfeed.activity;
 
+import java.util.Observable;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +27,7 @@ public final class SubscriptionsActivity_
     extends SubscriptionsActivity
 {
 
+    private Handler handler_ = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,6 +92,24 @@ public final class SubscriptionsActivity_
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void update(final Observable observable, final Object arg1) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    SubscriptionsActivity_.super.update(observable, arg1);
+                } catch (RuntimeException e) {
+                    Log.e("SubscriptionsActivity_", "A runtime exception was thrown while executing code in a runnable", e);
+                }
+            }
+
+        }
+        );
     }
 
     @Override

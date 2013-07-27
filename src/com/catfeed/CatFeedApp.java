@@ -28,9 +28,6 @@ public class CatFeedApp extends Application {
 	@Bean
 	public Repository repository;
 	
-	@Bean
-	public RssFeeder rss;
-	
 	private transient Notifier notifier = new Notifier();
 	
 	@Override
@@ -44,14 +41,12 @@ public class CatFeedApp extends Application {
 			subscriptions.put(sub._id, sub);
 		}
 	}
-	
+
 	/**
 	 * Refreshes ALL subscriptions.
-	 * PROBLEM: Because we are doing multiple concurrent async job, we cannot properly reset
-	 *          the spinning refresh button. Need to rethink this one.
 	 * @param item
 	 */
-	public void refreshAllSubscriptions(Progress progress) {
+	public void refreshAllSubscriptions(RssFeeder rss, Progress progress) {
     	
 		Collection<String> urls = F.each(subscriptions.values(), new F.Function<Subscription, String>() {
 			public String apply(Subscription subscription) {

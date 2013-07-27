@@ -39,11 +39,11 @@ public final class SubscriptionEditActivity_
     }
 
     private void afterSetContentView_() {
+        downloadContent = ((CheckBox) findViewById(id.downloadContent));
         retainFor = ((SeekBar) findViewById(id.retainFor));
         downloadImage = ((CheckBox) findViewById(id.downloadImage));
-        title = ((TextView) findViewById(id.title));
         retainForLabel = ((TextView) findViewById(id.retainForLabel));
-        downloadContent = ((CheckBox) findViewById(id.downloadContent));
+        title = ((TextView) findViewById(id.title));
         url = ((TextView) findViewById(id.url));
         {
             View view = findViewById(id.downloadContent);
@@ -76,14 +76,14 @@ public final class SubscriptionEditActivity_
             }
         }
         {
-            final TextView view = ((TextView) findViewById(id.title));
+            final TextView view = ((TextView) findViewById(id.url));
             if (view!= null) {
                 view.addTextChangedListener(new TextWatcher() {
 
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        SubscriptionEditActivity_.this.titleAfterTextChanged(view);
+                        SubscriptionEditActivity_.this.urlAfterTextChanged(view);
                     }
 
                     @Override
@@ -99,14 +99,14 @@ public final class SubscriptionEditActivity_
             }
         }
         {
-            final TextView view = ((TextView) findViewById(id.url));
+            final TextView view = ((TextView) findViewById(id.title));
             if (view!= null) {
                 view.addTextChangedListener(new TextWatcher() {
 
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        SubscriptionEditActivity_.this.urlAfterTextChanged(view);
+                        SubscriptionEditActivity_.this.titleAfterTextChanged(view);
                     }
 
                     @Override

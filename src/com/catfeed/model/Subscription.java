@@ -125,6 +125,10 @@ public class Subscription {
 		unreadCount = WebFeed.countUnread(application.repository, _id);
 	}
 	
+	public void resetUnreadCount() {
+		unreadCount = totalArticles;
+	}
+	
 	public void increaseArticlesBy(int increment) {
 		totalArticles += increment;
 		application.setChanged();
@@ -143,6 +147,7 @@ public class Subscription {
 	public int getCachedPercentage() {
 		return (noOfCachedArticles * 100)/ totalArticles;
 	}
+	
 	public int getNoOfCachedArticles() {
 		return noOfCachedArticles;
 	}

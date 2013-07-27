@@ -8,6 +8,8 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.catfeed.model.Subscription;
+
 /**
  * View for displaying a pie chart on the main screen.
  */
@@ -18,11 +20,10 @@ public class CacheReadChartView extends View
     private RectF cacheBound = new RectF();
     private RectF readBound = new RectF();
     
-    public float cached = 0.8f;  // Some default value
-    public float read = 0.5f;    // Some default value
+    private Subscription subscription;
     
     public int color = Color.BLUE;
-
+    
     public CacheReadChartView(Context context, AttributeSet attrs) 
     {
         super(context, attrs); 
@@ -31,6 +32,11 @@ public class CacheReadChartView extends View
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.FILL);
+    }
+    
+    public void setSubscription(Subscription subscription) {
+    	this.subscription = subscription;
+    	randomizeColourScheme(subscription.title.hashCode());
     }
     
     /**
@@ -49,15 +55,23 @@ public class CacheReadChartView extends View
     {
         super.onDraw(canvas);
 		cacheBound.set(0, 0, getWidth(), getHeight());
-     
+		if (subscription == null) return;
+		
+		// Outer Circle - cache
         paint.setColor( color );
         paint.setAlpha(100);
+        float cached = (subscription.getTotalArticles() == 0)? 0: 
+        				(float) subscription.getNoOfCachedArticles() / (float) subscription.getTotalArticles();
+        
         canvas.drawArc( cacheBound, -90, cached * 360, true, paint );
 
+        // Inner Circle - unread
         float read_left = getWidth() / READ_CACHE_SIZE;
         float read_top = getHeight() / READ_CACHE_SIZE;
         float read_right = getWidth() - (getWidth() / READ_CACHE_SIZE);
         float read_bottom = getHeight() - (getHeight() / READ_CACHE_SIZE);
+        float read =  (subscription.getTotalArticles() == 0)? 0:
+        			  (float) (subscription.getTotalArticles() - subscription.getUnreadCount()) / (float) subscription.getTotalArticles();
         
         readBound.set(read_left, read_top, read_right, read_bottom);        
         paint.setAlpha(180);
