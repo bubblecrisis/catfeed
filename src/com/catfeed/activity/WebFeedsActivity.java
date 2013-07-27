@@ -71,13 +71,14 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		application.addObserver(this);
 		
 //		if (subscription == null && savedInstanceState != null) {
 //			subscriptionId = savedInstanceState.getLong(Constants.SUBSCRIPTION_ID);
 //		}
 
 		// Load subscription information
-		subscription = Subscription.findById(repository, subscriptionId);
+		subscription = Subscription.findById(application, subscriptionId);
 		Log.d(Constants.LOGTAG, "Loaded subscription " + subscriptionId + " into view");
 	}
 	
@@ -236,21 +237,17 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
 	}
 
 	public void updateTitleCount(Repository repository, Long sub_id) {
-		application.totalArticles = WebFeed.count(repository, sub_id);
-		application.noOfCachedArticles = WebFeed.countCached(repository, sub_id);
-		application.unreadCount = WebFeed.countUnread(repository, sub_id);
 		updateSubtitle();
 	}
 
 	@UiThread
 	public void updateSubtitle() {
-		int cachedPercentage = (application.noOfCachedArticles * 100)/ application.totalArticles;
 		ActionBar ab = getActionBar();
-		ab.setSubtitle(application.totalArticles + " articles | " + application.unreadCount + " unread | " + cachedPercentage + "% cached");		
+		ab.setSubtitle(subscription.getTotalArticles() + " articles | " + subscription.getUnreadCount() + " unread | " + subscription.getCachedPercentage() + "% cached");		
 	}
 	
 	//--------------------------------------------------------------------------------------------------
-	// Pregression Observer
+	// Observer Pattern
 	//--------------------------------------------------------------------------------------------------
     
     /**
@@ -258,23 +255,27 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
      */
 	@Override
 	public void update(Observable observed, Object eventObject) {
-		if (eventObject instanceof ReceivedFeed) {
-			ReceivedFeed feed = (ReceivedFeed) eventObject;
-			if (subscription.url.equalsIgnoreCase(feed.feedUrl)) {	
-				// We can't correctly figure out the total articles by getting it from syndfeed 
-				// because there could be duplication. So we have to calculate from source.				
-				application.totalArticles = WebFeed.count(Repository.getRepository(this), subscription._id);
-				updateSubtitle();		
-			}
-		}
-		if (eventObject instanceof WebFeed) {
-			WebFeed feed = (WebFeed) eventObject;
-			if (subscription._id.equals(feed.sub_id)) {
-				application.noOfCachedArticles ++;
-				updateSubtitle();		
-			}
-		}
+		updateSubtitle();		
 	}
+	
+//	public void update(Observable observed, Object eventObject) {
+//		if (eventObject instanceof ReceivedFeed) {
+//			ReceivedFeed feed = (ReceivedFeed) eventObject;
+//			if (subscription.url.equalsIgnoreCase(feed.feedUrl)) {	
+//				// We can't correctly figure out the total articles by getting it from syndfeed 
+//				// because there could be duplication. So we have to calculate from source.				
+//				application.totalArticles = WebFeed.count(Repository.getRepository(this), subscription._id);
+//				updateSubtitle();		
+//			}
+//		}
+//		if (eventObject instanceof WebFeed) {
+//			WebFeed feed = (WebFeed) eventObject;
+//			if (subscription._id.equals(feed.sub_id)) {
+//				application.noOfCachedArticles ++;
+//				updateSubtitle();		
+//			}
+//		}
+//	}
 	
 
 }

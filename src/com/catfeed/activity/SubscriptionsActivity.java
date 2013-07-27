@@ -1,6 +1,5 @@
 package com.catfeed.activity;
 
-import static android.widget.CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER;
 import static com.catfeed.Constants.FLKR_ID;
 
 import java.util.Observable;
@@ -69,6 +68,7 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 	private ListPosition lastPosition;
 	
 	private boolean editMode = false;
+	
 	CursorAdapter adaptor;
 
 	private Menu menu;
@@ -81,7 +81,7 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 		adaptor = new SimpleCursorAdapter(this, R.layout.subscription_item, null /* cursor loads in Loader */, 
 			    new String[] { "title" }, 
 			    new int[] { R.id.title }, 
-			    FLAG_REGISTER_CONTENT_OBSERVER) {
+			    CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER) {
 		
 			/* trigger by notifyDataSetChanged() to refresh the view */
 			public void bindView(View view, Context context, Cursor cursor) {
@@ -137,6 +137,7 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 				return true;
 			}
 		};
+		application.addObserver(this);
 		setListAdapter(adaptor); // Setting adaptor on UI-thread can block?
 		checkForNewSubscription();
 	}
@@ -263,7 +264,8 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 	
 	@OptionsItem(R.id.menuitem_refresh)
     void refreshMenuItemClicked() {
-		application.refreshAllSubscriptions();
+//		AnimatingItem animate = new AnimatingItem(item);
+		application.refreshAllSubscriptions(null);
     }
 
 	//--------------------------------------------------------------------------------------------------
@@ -299,16 +301,16 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
         // longer using it.
         adaptor.swapCursor(null);
 	}
+
 	
 	//--------------------------------------------------------------------------------------------------
-	// Subscription Logic
+	// Observer Pattern
 	//--------------------------------------------------------------------------------------------------
 
-
 	@Override
-	public void update(Observable arg0, Object arg1) {
+	public void update(Observable observable, Object arg1) {
 		// TODO Auto-generated method stub
-		System.err.println("update -> " + arg0);
+		System.err.println("update -> " + observable);
 	}
 	
 	

@@ -1,20 +1,19 @@
 package com.catfeed.activity;
 
-import static com.catfeed.Constants.LOGTAG;
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.catfeed.CatFeedApp;
 import com.catfeed.R;
 import com.catfeed.db.Repository;
 import com.catfeed.model.Subscription;
-import com.catfeed.model.WebFeed;
 import com.googlecode.androidannotations.annotations.AfterTextChange;
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.App;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.SeekBarProgressChange;
@@ -28,6 +27,9 @@ public class SubscriptionEditActivity extends Activity {
 	/** Loaded onCreate */
 	private Subscription subscription;
 
+	@App
+	CatFeedApp application;
+	
 	@ViewById
 	public TextView title;
 
@@ -120,14 +122,7 @@ public class SubscriptionEditActivity extends Activity {
 	}
 
 	public void deleteSubscription(View view) {
-		Repository repository = Repository
-				.getRepository(getApplicationContext());
-		repository.delete(WebFeed.class, "sub_id=?",
-				String.valueOf(subscription._id));
-		Log.d(LOGTAG, "Deleted WebFeed subscription id " + subscription._id);
-
-		repository.delete(Subscription.class, subscription._id);
-		Log.d(LOGTAG, "Deleted Subscription id " + subscription._id);
+		application.deleteSubscription(subscription);
 		finish();
 	}
 }

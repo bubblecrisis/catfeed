@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import com.catfeed.CatFeedApp;
 import com.catfeed.R.id;
 import com.catfeed.R.layout;
 
@@ -34,30 +35,16 @@ public final class SubscriptionEditActivity_
     }
 
     private void init_(Bundle savedInstanceState) {
+        application = ((CatFeedApp) this.getApplication());
     }
 
     private void afterSetContentView_() {
-        url = ((TextView) findViewById(id.url));
         downloadImage = ((CheckBox) findViewById(id.downloadImage));
-        title = ((TextView) findViewById(id.title));
-        retainForLabel = ((TextView) findViewById(id.retainForLabel));
+        url = ((TextView) findViewById(id.url));
         retainFor = ((SeekBar) findViewById(id.retainFor));
         downloadContent = ((CheckBox) findViewById(id.downloadContent));
-        {
-            View view = findViewById(id.downloadImage);
-            if (view!= null) {
-                view.setOnClickListener(new OnClickListener() {
-
-
-                    @Override
-                    public void onClick(View view) {
-                        SubscriptionEditActivity_.this.downloadImage();
-                    }
-
-                }
-                );
-            }
-        }
+        title = ((TextView) findViewById(id.title));
+        retainForLabel = ((TextView) findViewById(id.retainForLabel));
         {
             View view = findViewById(id.downloadContent);
             if (view!= null) {
@@ -67,6 +54,21 @@ public final class SubscriptionEditActivity_
                     @Override
                     public void onClick(View view) {
                         SubscriptionEditActivity_.this.downloadContent();
+                    }
+
+                }
+                );
+            }
+        }
+        {
+            View view = findViewById(id.downloadImage);
+            if (view!= null) {
+                view.setOnClickListener(new OnClickListener() {
+
+
+                    @Override
+                    public void onClick(View view) {
+                        SubscriptionEditActivity_.this.downloadImage();
                     }
 
                 }

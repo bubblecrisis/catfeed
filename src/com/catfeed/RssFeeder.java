@@ -37,6 +37,7 @@ import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.Syn
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndImage;
 import com.google.code.rome.android.repackaged.com.sun.syndication.fetcher.FeedFetcher;
 import com.google.code.rome.android.repackaged.com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
+import com.googlecode.androidannotations.annotations.App;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EBean;
@@ -52,13 +53,20 @@ public class RssFeeder {
 	// Only injected if the root context is an activity
 	Activity activity;
 	
+	@App
+	CatFeedApp application;
+	
 	@Bean
 	WebPageFeeder webPageFeeder;
 	
 	@Bean
 	Repository repository;
 
-
+	/**
+	 * Refresh RSS feed
+	 * @param progress
+	 * @param feedUrl
+	 */
 	@Background
 	public void refresh(Progress progress, String... feedUrl) {
 		try {
@@ -89,6 +97,11 @@ public class RssFeeder {
 		}
 	}
 
+	/**
+	 * Subscribe to a new RSS subscription.
+	 * @param progress
+	 * @param feedUrl
+	 */
 	@Background
 	public void subscribe(Progress progress, String... feedUrl) {
 		List<ReceivedFeed> feeds = retrieveFeeds(feedUrl);
@@ -98,15 +111,14 @@ public class RssFeeder {
 		}			
 		
 		ReceivedFeed feed = feeds.get(0);
-	    Subscription subscription = new Subscription(feed.feedUrl, feed.syndFeed);		
+	    Subscription subscription = new Subscription(application, feed.feedUrl, feed.syndFeed);		
 	    
 	    // Check if there is already a copy in the database
-		Subscription exists = Subscription.findByUrl(repository, subscription.url);
-		if (exists == null) {
+		Subscription exists = Subscription.findByUrl(application, feed.feedUrl);
+		if (exists == null /* does not exists */) {
 			// Subscription id is -1 or 0 if there there is an error, including
 	        // duplicated subscription.
 			subscription._id = repository.add(subscription);  
-			
 			activity.getContentResolver().notifyChange(CatFeedContentProvider.table(Subscription.class.getName()), null);
 			
 			// Fetch subscription image
@@ -122,10 +134,14 @@ public class RssFeeder {
 		        	for (SyndEntry entry: (List<SyndEntry>) feed.syndFeed.getEntries()) {
 		            	WebFeed webfeed = new WebFeed(entry, subscription._id);
 		            	repository.add(webfeed);
+		            	subscription.increaseArticlesBy(1);
 		            }        	        			    			
 	    		}
 	    		catch(Exception e) {
 	    			Log.e(Constants.LOGTAG, "Error adding subscription webfeed " + subscription.title, e);
+	    		}
+	    		finally {
+	    			application.notifyObservers();
 	    		}
 	    	}
 		}	
@@ -230,16 +246,16 @@ public class RssFeeder {
 			if (webfeed == null) {
 
 				// Only query subscription if one does not exists. The
-				// subscription
-				// should be identical for all items in the receivedFeeds.
+				// subscription should be identical for all items in the receivedFeeds.
 				if (subscription == null) {
-					subscription = Subscription.findByUrl(repository,
-							receivedFeed.feedUrl);
+					subscription = Subscription.findByUrl(application, receivedFeed.feedUrl);
 				}
 
 				webfeed = new WebFeed(entry, subscription._id);
 				content.insert(table("webfeed"), createValues(webfeed));
 				subscriptionId = subscription._id;
+				subscription.increaseArticlesBy(1);  // Is a new article
+				application.notifyObservers();
 			} else {
 				webfeed.setSyndEntry(entry);
 				content.update(table("webfeed"), createValues(webfeed),
@@ -248,7 +264,7 @@ public class RssFeeder {
 			}
 		}
 		return subscriptionId; // All the webfeed should belong to the same
-								// subscription
+							   // subscription
 	}
 
 	@UiThread

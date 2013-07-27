@@ -30,8 +30,8 @@ public final class RssFeeder_
         if (!(context_ instanceof Activity)) {
             return ;
         }
-        ((Repository_) repository).afterSetContentView_();
         ((WebPageFeeder_) webPageFeeder).afterSetContentView_();
+        ((Repository_) repository).afterSetContentView_();
     }
 
     /**
@@ -47,13 +47,14 @@ public final class RssFeeder_
     private void init_() {
         if (context_ instanceof Activity) {
             Activity activity = ((Activity) context_);
+            application = ((CatFeedApp) activity.getApplication());
         }
         context = context_;
         if (context_ instanceof Activity) {
             activity = ((Activity) context_);
         }
-        repository = Repository_.getInstance_(context_);
         webPageFeeder = WebPageFeeder_.getInstance_(context_);
+        repository = Repository_.getInstance_(context_);
     }
 
     public static RssFeeder_ getInstance_(Context context) {

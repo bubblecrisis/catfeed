@@ -2,6 +2,7 @@ package com.catfeed.db;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -155,13 +156,19 @@ public class Repository extends SQLiteOpenHelper {
 		return rowid;
 	}
 	
+	private boolean isPersistent(Field f) {
+		return !Modifier.isTransient(f.getModifiers()) &&
+			   !Modifier.isStatic(f.getModifiers());
+	}
 	
 	public String[] columns(Class modelClass) {
 		Field[] fields = modelClass.getDeclaredFields();
 		String[] columns = new String[fields.length];
 		int i = 0;
 		for (Field f: fields) {
-			columns[i++] = f.getName();
+			if (isPersistent(f)) {
+				columns[i++] = f.getName();
+			}
 		}
 		return columns;
 	}
@@ -171,26 +178,28 @@ public class Repository extends SQLiteOpenHelper {
 		try {
 			T model = modelClass.newInstance();
 			for (Field f: modelClass.getDeclaredFields()) {
-				if   (f.getType().equals(String.class)) {
-					f.set(model, c.getString(i));
+				if (isPersistent(f)) {
+					if   (f.getType().equals(String.class)) {
+						f.set(model, c.getString(i));
+					}
+					else if (f.getType().equals(Long.class)) {
+						f.set(model, c.getLong(i));
+					}
+					else if (f.getType().equals(Integer.class)) {
+						f.set(model, c.getInt(i));
+					}
+					else if (f.getType().equals(Date.class)) {
+						f.set(model, new Date(c.getLong(i)));
+					}
+					else if (f.getType().equals(Boolean.class)) {
+						Integer intValue = c.getInt(i);
+						f.set(model, (intValue != null && intValue > 0));
+					}
+					else {
+						Log.e(Constants.LOGTAG, "Repository.populateModel(): Cannot automatically assign value to field " + f.getName());
+					}
+					i++;
 				}
-				else if (f.getType().equals(Long.class)) {
-					f.set(model, c.getLong(i));
-				}
-				else if (f.getType().equals(Integer.class)) {
-					f.set(model, c.getInt(i));
-				}
-				else if (f.getType().equals(Date.class)) {
-					f.set(model, new Date(c.getLong(i)));
-				}
-				else if (f.getType().equals(Boolean.class)) {
-					Integer intValue = c.getInt(i);
-					f.set(model, (intValue != null && intValue > 0));
-				}
-				else {
-					Log.e(Constants.LOGTAG, "Repository.populateModel(): Cannot automatically assign value to field " + f.getName());
-				}
-				i++;
 			}
 			return model;			
 		}

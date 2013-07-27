@@ -35,13 +35,13 @@ public final class SubscriptionsActivity_
 
     private void init_(Bundle savedInstanceState) {
         application = ((CatFeedApp) this.getApplication());
-        repository = Repository_.getInstance_(this);
         rss = RssFeeder_.getInstance_(this);
+        repository = Repository_.getInstance_(this);
     }
 
     private void afterSetContentView_() {
-        ((Repository_) repository).afterSetContentView_();
         ((RssFeeder_) rss).afterSetContentView_();
+        ((Repository_) repository).afterSetContentView_();
     }
 
     @Override

@@ -1,9 +1,13 @@
 package com.catfeed.model;
 
+import java.util.Observer;
+
 import utils.Entity;
+import utils.Notifier;
 import utils.Progress;
 import android.content.ContentValues;
 
+import com.catfeed.CatFeedApp;
 import com.catfeed.RssFeeder;
 import com.catfeed.db.Repository;
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndFeed;
@@ -18,20 +22,39 @@ public class Subscription {
 	public Integer dlpage = 1;   /* true */
 	public Integer retain = 5;   /* defaults to 5 days */    
 
+	//------------------------------------------------------------------------
+	// Transients Page Statistics
+	//------------------------------------------------------------------------
+	private transient CatFeedApp application;
+	private transient int noOfCachedArticles = 0;
+	private transient int totalArticles = 0;
+	private transient int unreadCount = 0;
+		
 	public Subscription() {
 	}
 	
-	public Subscription(String rssUrl, SyndFeed feed) {
+	public Subscription(CatFeedApp application, String rssUrl, SyndFeed feed) {
+		this.application = application;
 		this.title = feed.getTitle();
 		this.url = rssUrl;
 	}
 
-	public static Subscription findById(Repository repository, Long id) {
-		return repository.findBy(Subscription.class, "_id=?", id.toString());		
+	public static Subscription findById(CatFeedApp application, Long id) {
+		Subscription subscription = application.repository.findBy(Subscription.class, "_id=?", id.toString());	
+		if (subscription != null) {
+			subscription.calculateStatistics(application.repository);
+			subscription.application = application;			
+		}
+		return subscription;
 	}
 	
-	public static Subscription findByUrl(Repository repository, String url) {
-		return repository.findBy(Subscription.class, "url=?", url);		
+	public static Subscription findByUrl(CatFeedApp application, String url) {
+		Subscription subscription =  application.repository.findBy(Subscription.class, "url=?", url);		
+		if (subscription != null) {
+			subscription.calculateStatistics(application.repository);
+			subscription.application = application;			
+		}
+		return subscription;
 	}
 	
 	/**
@@ -40,6 +63,11 @@ public class Subscription {
 	 */
 	public void clear(Repository repository) {
 		repository.delete(WebFeed.class, "sub_id=?", this._id.toString());
+		noOfCachedArticles = 0;
+		totalArticles = 0;
+		unreadCount = 0;
+		application.setChanged();
+		application.notifyObservers();
 	}
 	
 	/**
@@ -50,6 +78,7 @@ public class Subscription {
 	 */
 	public void refresh(RssFeeder rss, Progress progress) {
 		rss.refresh(progress, this.url);
+		application.notifyObservers();
 	}
 	
 	/**
@@ -75,4 +104,56 @@ public class Subscription {
 	public static byte[] getImage(Repository repository, Long subscriptionId) {
 		return (byte[]) repository.valueOf(Subscription.class, subscriptionId, new String[] { "icon" } )[0];
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		return _id.equals(((Subscription) o)._id);
+	}
+
+	@Override
+	public int hashCode() {
+		return _id.hashCode();
+	}
+	
+	//------------------------------------------------------------------------------------------------------
+	// Page Statistics
+	//------------------------------------------------------------------------------------------------------
+	
+	public void calculateStatistics(Repository repository) {
+		noOfCachedArticles = WebFeed.countCached(repository, _id);
+		totalArticles = WebFeed.count(repository, _id);
+		unreadCount = WebFeed.countUnread(repository, _id);
+	}
+	
+	public void increaseArticlesBy(int increment) {
+		totalArticles += increment;
+		application.setChanged();
+	}
+
+	public void increaseCachedBy(int increment) {
+		noOfCachedArticles += increment;
+		application.setChanged();
+	}	
+	
+	public void readArticleBy(int increment) {
+		unreadCount -= increment;
+		application.setChanged();
+	}	
+	
+	public int getCachedPercentage() {
+		return (noOfCachedArticles * 100)/ totalArticles;
+	}
+	public int getNoOfCachedArticles() {
+		return noOfCachedArticles;
+	}
+
+	public int getTotalArticles() {
+		return totalArticles;
+	}
+
+	public int getUnreadCount() {
+		return unreadCount;
+	}
+
+
 }
