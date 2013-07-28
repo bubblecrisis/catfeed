@@ -38,13 +38,13 @@ public final class SubscriptionsActivity_
 
     private void init_(Bundle savedInstanceState) {
         application = ((CatFeedApp) this.getApplication());
-        rss = RssFeeder_.getInstance_(this);
         repository = Repository_.getInstance_(this);
+        rss = RssFeeder_.getInstance_(this);
     }
 
     private void afterSetContentView_() {
-        ((RssFeeder_) rss).afterSetContentView_();
         ((Repository_) repository).afterSetContentView_();
+        ((RssFeeder_) rss).afterSetContentView_();
     }
 
     @Override
@@ -83,12 +83,12 @@ public final class SubscriptionsActivity_
             return true;
         }
         int itemId_ = item.getItemId();
-        if (itemId_ == com.catfeed.R.id.menuitem_edit) {
-            editMenuItemClicked();
-            return true;
-        }
         if (itemId_ == com.catfeed.R.id.menuitem_refresh) {
             refreshMenuItemClicked();
+            return true;
+        }
+        if (itemId_ == com.catfeed.R.id.menuitem_add) {
+            editMenuItemClicked();
             return true;
         }
         return false;

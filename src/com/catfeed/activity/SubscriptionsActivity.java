@@ -2,7 +2,6 @@ package com.catfeed.activity;
 
 import static com.catfeed.Constants.FLKR_ID;
 
-import java.util.Collection;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
@@ -10,9 +9,7 @@ import java.util.Random;
 import org.apache.commons.io.IOUtils;
 
 import utils.CursorUtils;
-import utils.F;
 import utils.ListPosition;
-import utils.Progress;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.Context;
@@ -26,6 +23,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -57,7 +56,7 @@ import com.googlecode.flickrjandroid.photos.SearchParameters;
  */
 @OptionsMenu(R.menu.subscription)
 @EActivity(R.layout.subscriptions_activity)
-public class SubscriptionsActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> , Observer
+public class SubscriptionsActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> , Observer, OnItemLongClickListener
 {		
 	@App
 	CatFeedApp application;
@@ -70,8 +69,6 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 	
 	/** Current position when moving off views */
 	private ListPosition lastPosition;
-	
-	private boolean editMode = false;
 	
 	CursorAdapter adaptor;
 
@@ -90,8 +87,6 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 			/* trigger by notifyDataSetChanged() to refresh the view */
 			public void bindView(View view, Context context, Cursor cursor) {
 				super.bindView(view, context, cursor);
-				ImageView arrow = (ImageView) view.findViewById(R.id.image1);				
-				arrow.setImageResource(editMode? R.drawable.content_edit_item: R.drawable.navigation_next_item);	
 				
 				// Draw cache & unread pie chart
 				CacheReadChartView cacheReadView = (CacheReadChartView) view.findViewById(R.id.background);		
@@ -141,7 +136,13 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 			}
 		};
 		application.addObserver(this);
-		setListAdapter(adaptor); // Setting adaptor on UI-thread can block?
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		getListView().setOnItemLongClickListener(this);  // Long click to support editing of item
+		setListAdapter(adaptor);
 		checkForNewSubscription();
 	}
 	
@@ -160,21 +161,30 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 		lastPosition = ListPosition.getScrollPosition(getListView());
 	}
 	
+	//--------------------------------------------------------------------------------------------------
+	// Click on List Item
+	//--------------------------------------------------------------------------------------------------
+	/**
+	 * View a subscription
+	 */
 	@Override
 	public void onListItemClick(ListView listView, View view, int position,
 			long id) {
 		super.onListItemClick(listView, view, position, id);
+		Intent intent = new Intent(this, WebFeedsActivity_.class);
+		intent.putExtra(Constants.SUBSCRIPTION_ID, id);
+		startActivity(intent);
+	}
 
-		if (editMode) {
-			Intent intent = new Intent(this, SubscriptionEditActivity_.class);
-			intent.putExtra("id", id);
-			startActivity(intent);
-		}
-		else {
-			Intent intent = new Intent(this, WebFeedsActivity_.class);
-		    intent.putExtra(Constants.SUBSCRIPTION_ID, id);
-		    startActivity(intent);
-		}
+	/**
+	 * Long click to edit a subscription
+	 */
+	@Override
+	public boolean onItemLongClick(AdapterView<?> listView, View view, int position, long id) {
+		Intent intent = new Intent(this, SubscriptionEditActivity_.class);
+		intent.putExtra("id", id);
+		startActivity(intent);		
+		return true;
 	}
 	
 	//--------------------------------------------------------------------------------------------------
@@ -257,12 +267,9 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 	// Menu
 	//--------------------------------------------------------------------------------------------------
 
-	@OptionsItem(R.id.menuitem_edit)
+	@OptionsItem(R.id.menuitem_add)
     void editMenuItemClicked() {
-		editMode = !editMode;
-		MenuItem item = menu.findItem(R.id.menuitem_edit);
-		item.setIcon(editMode? R.drawable.navigation_accept: R.drawable.content_edit);
-		adaptor.notifyDataSetChanged();  // Causes CursorAdaptor.bindView() to be called. Refreshing views to change the ListView icons.
+//		MenuItem item = menu.findItem(R.id.menuitem_add);
     }
 	
 	@OptionsItem(R.id.menuitem_refresh)
@@ -316,8 +323,7 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 	public void update(Observable observable, Object arg1) {
 		adaptor.notifyDataSetChanged(); 
 	}
-	
-	
+
 	
 
 }

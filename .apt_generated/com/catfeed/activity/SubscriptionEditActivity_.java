@@ -39,27 +39,12 @@ public final class SubscriptionEditActivity_
     }
 
     private void afterSetContentView_() {
-        downloadContent = ((CheckBox) findViewById(id.downloadContent));
         retainFor = ((SeekBar) findViewById(id.retainFor));
-        downloadImage = ((CheckBox) findViewById(id.downloadImage));
-        retainForLabel = ((TextView) findViewById(id.retainForLabel));
-        title = ((TextView) findViewById(id.title));
         url = ((TextView) findViewById(id.url));
-        {
-            View view = findViewById(id.downloadContent);
-            if (view!= null) {
-                view.setOnClickListener(new OnClickListener() {
-
-
-                    @Override
-                    public void onClick(View view) {
-                        SubscriptionEditActivity_.this.downloadContent();
-                    }
-
-                }
-                );
-            }
-        }
+        downloadContent = ((CheckBox) findViewById(id.downloadContent));
+        downloadImage = ((CheckBox) findViewById(id.downloadImage));
+        title = ((TextView) findViewById(id.title));
+        retainForLabel = ((TextView) findViewById(id.retainForLabel));
         {
             View view = findViewById(id.downloadImage);
             if (view!= null) {
@@ -69,6 +54,21 @@ public final class SubscriptionEditActivity_
                     @Override
                     public void onClick(View view) {
                         SubscriptionEditActivity_.this.downloadImage();
+                    }
+
+                }
+                );
+            }
+        }
+        {
+            View view = findViewById(id.downloadContent);
+            if (view!= null) {
+                view.setOnClickListener(new OnClickListener() {
+
+
+                    @Override
+                    public void onClick(View view) {
+                        SubscriptionEditActivity_.this.downloadContent();
                     }
 
                 }

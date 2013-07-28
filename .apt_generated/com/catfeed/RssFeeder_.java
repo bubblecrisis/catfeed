@@ -30,8 +30,8 @@ public final class RssFeeder_
         if (!(context_ instanceof Activity)) {
             return ;
         }
-        ((WebPageFeeder_) webPageFeeder).afterSetContentView_();
         ((Repository_) repository).afterSetContentView_();
+        ((WebPageFeeder_) webPageFeeder).afterSetContentView_();
     }
 
     /**
@@ -53,8 +53,8 @@ public final class RssFeeder_
             activity = ((Activity) context_);
         }
         context = context_;
-        webPageFeeder = WebPageFeeder_.getInstance_(context_);
         repository = Repository_.getInstance_(context_);
+        webPageFeeder = WebPageFeeder_.getInstance_(context_);
     }
 
     public static RssFeeder_ getInstance_(Context context) {
@@ -103,14 +103,14 @@ public final class RssFeeder_
     }
 
     @Override
-    public void refresh(final Progress progress, final String[] feedUrl) {
+    public void downloadIcon(final Long subscriptionId, final String url) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    RssFeeder_.super.refresh(progress, feedUrl);
+                    RssFeeder_.super.downloadIcon(subscriptionId, url);
                 } catch (RuntimeException e) {
                     Log.e("RssFeeder_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -121,14 +121,14 @@ public final class RssFeeder_
     }
 
     @Override
-    public void downloadIcon(final Long subscriptionId, final String url) {
+    public void refresh(final Progress progress, final String[] feedUrl) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    RssFeeder_.super.downloadIcon(subscriptionId, url);
+                    RssFeeder_.super.refresh(progress, feedUrl);
                 } catch (RuntimeException e) {
                     Log.e("RssFeeder_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

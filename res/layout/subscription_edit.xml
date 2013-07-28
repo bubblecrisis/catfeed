@@ -79,7 +79,7 @@
 	    android:onClick="saveSubscription" 
 	    android:layout_marginTop="10dp"
 	    android:layout_marginRight="10dp"
-	    android:text="Save" />
+	    android:text="OK" />
 
 	<Button
 	    android:id="@+id/delete"

@@ -38,14 +38,14 @@ public final class WebSummaryActivity_
     private void init_(Bundle savedInstanceState) {
         injectExtras_();
         application = ((CatFeedApp) this.getApplication());
-        repository = Repository_.getInstance_(this);
         rss = RssFeeder_.getInstance_(this);
+        repository = Repository_.getInstance_(this);
     }
 
     private void afterSetContentView_() {
         title = ((TextView) findViewById(id.title));
-        ((Repository_) repository).afterSetContentView_();
         ((RssFeeder_) rss).afterSetContentView_();
+        ((Repository_) repository).afterSetContentView_();
         prepopulate();
     }
 
