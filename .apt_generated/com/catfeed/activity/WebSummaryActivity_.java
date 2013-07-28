@@ -38,14 +38,14 @@ public final class WebSummaryActivity_
     private void init_(Bundle savedInstanceState) {
         injectExtras_();
         application = ((CatFeedApp) this.getApplication());
-        repository = Repository_.getInstance_(this);
         rss = RssFeeder_.getInstance_(this);
+        repository = Repository_.getInstance_(this);
     }
 
     private void afterSetContentView_() {
         title = ((TextView) findViewById(id.title));
-        ((Repository_) repository).afterSetContentView_();
         ((RssFeeder_) rss).afterSetContentView_();
+        ((Repository_) repository).afterSetContentView_();
         prepopulate();
     }
 
@@ -80,16 +80,16 @@ public final class WebSummaryActivity_
         Intent intent_ = getIntent();
         Bundle extras_ = intent_.getExtras();
         if (extras_!= null) {
-            if (extras_.containsKey("subscriptionTitle")) {
+            if (extras_.containsKey("feedId")) {
                 try {
-                    subscriptionTitle = cast_(extras_.get("subscriptionTitle"));
+                    feedId = cast_(extras_.get("feedId"));
                 } catch (ClassCastException e) {
                     Log.e("WebSummaryActivity_", "Could not cast extra to expected type, the field is left to its default value", e);
                 }
             }
-            if (extras_.containsKey("feedId")) {
+            if (extras_.containsKey("subscriptionTitle")) {
                 try {
-                    feedId = cast_(extras_.get("feedId"));
+                    subscriptionTitle = cast_(extras_.get("subscriptionTitle"));
                 } catch (ClassCastException e) {
                     Log.e("WebSummaryActivity_", "Could not cast extra to expected type, the field is left to its default value", e);
                 }
@@ -155,13 +155,13 @@ public final class WebSummaryActivity_
             }
         }
 
-        public WebSummaryActivity_.IntentBuilder_ subscriptionTitle(String subscriptionTitle) {
-            intent_.putExtra("subscriptionTitle", subscriptionTitle);
+        public WebSummaryActivity_.IntentBuilder_ feedId(Long feedId) {
+            intent_.putExtra("feedId", ((Serializable) feedId));
             return this;
         }
 
-        public WebSummaryActivity_.IntentBuilder_ feedId(Long feedId) {
-            intent_.putExtra("feedId", ((Serializable) feedId));
+        public WebSummaryActivity_.IntentBuilder_ subscriptionTitle(String subscriptionTitle) {
+            intent_.putExtra("subscriptionTitle", subscriptionTitle);
             return this;
         }
 

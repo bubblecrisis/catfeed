@@ -20,6 +20,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 
@@ -27,7 +30,6 @@ import com.catfeed.CatFeedApp;
 import com.catfeed.Constants;
 import com.catfeed.R;
 import com.catfeed.RssFeeder;
-import com.catfeed.RssFeeder.ReceivedFeed;
 import com.catfeed.adaptor.WebFeedsAdaptor;
 import com.catfeed.db.Repository;
 import com.catfeed.model.Subscription;
@@ -47,7 +49,7 @@ import com.googlecode.androidannotations.annotations.UiThread;
  */
 @OptionsMenu(R.menu.webfeeds)
 @EActivity(R.layout.webfeed_activity)
-public class WebFeedsActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>, Observer
+public class WebFeedsActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>, Observer, OnItemLongClickListener
 {	
 	@App
 	CatFeedApp application;
@@ -66,7 +68,8 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
 	private ListPosition lastPosition;
 	
 	public Subscription subscription;
-	protected CursorAdapter adaptor;
+	protected WebFeedsAdaptor adaptor;
+
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -96,7 +99,8 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
 		super.onStart();
 		adaptor = new WebFeedsAdaptor(this, null);
 		setListAdapter(adaptor);
-
+		getListView().setOnItemLongClickListener(this);  // Long click to support editing of item
+		
 		// ------------------------------------------------------------------------------------------
 		// Handle Swipe Gesture.
 		// ------------------------------------------------------------------------------------------
@@ -144,6 +148,10 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
 		outState.putLong(Constants.SUBSCRIPTION_ID, subscription._id);
 		super.onSaveInstanceState(outState);
 	}
+	
+	//--------------------------------------------------------------------------------------------------
+	// List Item Click
+	//--------------------------------------------------------------------------------------------------
 
 	/**
 	 * Handle each list item click event. The list item layout and widgets must have clickable=false.
@@ -152,10 +160,23 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
 	public void onListItemClick(ListView listView, View view, int position,
 			long id) {
 		super.onListItemClick(listView, view, position, id);
-		Intent intent = new Intent(this, WebSummaryActivity_.class);
+		Intent intent = new Intent(this, BrowseWebActivity_.class);
 	    intent.putExtra(Constants.FEED_ID, id);
-	    intent.putExtra(Constants.SUBSCRIPTION_TITLE, subscription.title);
 	    startActivity(intent);
+	}
+
+	/**
+	 * Long click to edit a subscription
+	 */
+	@Override
+	public boolean onItemLongClick(AdapterView<?> listView, View view, int position, long id) {
+		WebFeed feed = repository.findById(WebFeed.class, id);	
+		feed.markAsRead(repository);
+		subscription.calculateStatistics(application);
+		updateSubtitle();
+		adaptor.selectArticle(id);
+		getListView().invalidateViews(); // Just redraw, not changing data, not need to adaptor.notifyDataSetChanged();
+		return true;
 	}
 	//--------------------------------------------------------------------------------------------------
 	// MENU

@@ -40,26 +40,11 @@ public final class SubscriptionEditActivity_
 
     private void afterSetContentView_() {
         url = ((TextView) findViewById(id.url));
-        retainForLabel = ((TextView) findViewById(id.retainForLabel));
         title = ((TextView) findViewById(id.title));
+        retainForLabel = ((TextView) findViewById(id.retainForLabel));
         retainFor = ((SeekBar) findViewById(id.retainFor));
         downloadImage = ((CheckBox) findViewById(id.downloadImage));
         downloadContent = ((CheckBox) findViewById(id.downloadContent));
-        {
-            View view = findViewById(id.downloadImage);
-            if (view!= null) {
-                view.setOnClickListener(new OnClickListener() {
-
-
-                    @Override
-                    public void onClick(View view) {
-                        SubscriptionEditActivity_.this.downloadImage();
-                    }
-
-                }
-                );
-            }
-        }
         {
             View view = findViewById(id.downloadContent);
             if (view!= null) {
@@ -76,22 +61,14 @@ public final class SubscriptionEditActivity_
             }
         }
         {
-            final TextView view = ((TextView) findViewById(id.url));
+            View view = findViewById(id.downloadImage);
             if (view!= null) {
-                view.addTextChangedListener(new TextWatcher() {
+                view.setOnClickListener(new OnClickListener() {
 
 
                     @Override
-                    public void afterTextChanged(Editable s) {
-                        SubscriptionEditActivity_.this.urlAfterTextChanged(view);
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    }
-
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    public void onClick(View view) {
+                        SubscriptionEditActivity_.this.downloadImage();
                     }
 
                 }
@@ -107,6 +84,29 @@ public final class SubscriptionEditActivity_
                     @Override
                     public void afterTextChanged(Editable s) {
                         SubscriptionEditActivity_.this.titleAfterTextChanged(view);
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                }
+                );
+            }
+        }
+        {
+            final TextView view = ((TextView) findViewById(id.url));
+            if (view!= null) {
+                view.addTextChangedListener(new TextWatcher() {
+
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        SubscriptionEditActivity_.this.urlAfterTextChanged(view);
                     }
 
                     @Override

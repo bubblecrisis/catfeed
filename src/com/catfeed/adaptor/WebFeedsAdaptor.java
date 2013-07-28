@@ -1,27 +1,44 @@
 package com.catfeed.adaptor;
 
+import static android.util.TypedValue.COMPLEX_UNIT_DIP;
+import static android.util.TypedValue.applyDimension;
+
 import java.util.Date;
 
 import utils.CursorUtils;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.text.format.DateUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.webkit.WebView;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.catfeed.R;
 
 public class WebFeedsAdaptor extends CursorAdapter {
 
+	private int DEFAULT_HEIGHT = 0;
+	
+	private static final int SELECTED_BACKGROUND = Color.rgb(240, 240, 240);
+	
+	/**
+	 * Will zoom into the selected arcticle, where the list item webview will not crop
+	 * the content height. There can only be one zoomed article. The value represent the feed id.
+	 */
+	private long selectedArcticle = -1;
+	
 	private LayoutInflater inflater;
 	
 	public WebFeedsAdaptor(Context context, Cursor cursor) {
 		super(context, cursor, FLAG_REGISTER_CONTENT_OBSERVER /* not needed if using CursorLoader */);
 		inflater = LayoutInflater.from(context);
+		DEFAULT_HEIGHT = (int) applyDimension(COMPLEX_UNIT_DIP, 110, context.getResources().getDisplayMetrics());;
 	}
 	
 	/**
@@ -33,11 +50,37 @@ public class WebFeedsAdaptor extends CursorAdapter {
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setText(CursorUtils.getString(cursor, "title"));
 
-		// Use a flag instead of body.
-//		ImageView arrow = (ImageView) view.findViewById(R.id.image1);
-//		if (CursorUtils.getString(cursor, "body") != null) {
-//			arrow.setImageResource(R.drawable.navigation_next_itemcached);			
-//		}
+		// Configure the WebView inside list item
+		WebView summary = (WebView) view.findViewById(R.id.summary);
+		summary.loadData(CursorUtils.getString(cursor, "summary"), "text/html", "utf-8");
+		
+		// Disable the webview interaction inside the list item
+		// For some reason XML setting isn't working out. Set it in code manually.
+		summary.setLongClickable(false);
+		summary.setFocusable(false);
+		summary.setFocusableInTouchMode(false);
+		
+		// Reduces flickering
+		summary.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+		
+		// Allows WebView to expand if the user "long click" to select the article
+		Long id = CursorUtils.getLong(cursor, "_id");
+		if (selectedArcticle == id.longValue()) {
+			view.setBackgroundColor(SELECTED_BACKGROUND);
+			summary.setBackgroundColor(SELECTED_BACKGROUND);
+			summary.setClickable(true);
+			if (summary.getContentHeight() > DEFAULT_HEIGHT) {
+				summary.getLayoutParams().height = LayoutParams.WRAP_CONTENT;				
+			}
+		}
+		else {
+			summary.getLayoutParams().height = DEFAULT_HEIGHT;
+			summary.setBackgroundColor(Color.TRANSPARENT);
+			view.setBackgroundColor(Color.WHITE);
+			summary.setClickable(false);
+		}
+		
+		// Footer: cached or not
 		TextView cached = (TextView) view.findViewById(R.id.cached);
 		if (CursorUtils.getBoolean(cursor, "cached")) {
 			cached.setText("Cached");
@@ -46,7 +89,7 @@ public class WebFeedsAdaptor extends CursorAdapter {
 			cached.setText("");	
 		}
 		
-		// Show relative hours and days.
+		// Footer: Show relative hours and days.
 		TextView when = (TextView) view.findViewById(R.id.when);
 		long today   = new Date().getTime();
 		long pubdate = CursorUtils.getLong(cursor, "date");
@@ -70,6 +113,8 @@ public class WebFeedsAdaptor extends CursorAdapter {
 		return true;
 	}
 
-
+	public void selectArticle(long feedId) {
+		selectedArcticle = feedId;
+	}
 	
 }
