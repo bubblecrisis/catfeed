@@ -22,10 +22,14 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import utils.Dialog;
 import utils.Progress;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.text.Editable;
 import android.util.Log;
+import android.widget.EditText;
 
 import com.catfeed.activity.WebFeedsActivity_;
 import com.catfeed.db.Repository;
@@ -72,7 +76,7 @@ public class RssFeeder {
 		try {
 			List<ReceivedFeed> feeds = retrieveFeeds(feedUrl);
 			if (feeds.size() == 0) {
-				Dialog.error(activity, "Fetching feeds", "No response from server", null);
+				rssFetchError("Fetching feeds", "No response from server");
 				return;
 			}
 
@@ -103,10 +107,10 @@ public class RssFeeder {
 	 * @param feedUrl
 	 */
 	@Background
-	public void subscribe(Progress progress, String... feedUrl) {
+	public void subscribe(Progress progress, String feedUrl) {
 		List<ReceivedFeed> feeds = retrieveFeeds(feedUrl);
 		if (feeds == null || feeds.size() == 0) {
-			Dialog.error(activity, "Subscribing", "No response from server", null);
+			promptNewSubscription(feedUrl, "Enter the RSS URL");
 			return;
 		}			
 		
@@ -168,6 +172,37 @@ public class RssFeeder {
 	@Background
 	public void downloadIcon(Long subscriptionId, String url) {
 		fetchIcon(subscriptionId, url);
+	}
+	
+	/**
+	 * Display dialog when RSS fetching encountered error
+	 */
+	@UiThread
+	void rssFetchError(String title, String message) {
+		Dialog.error(activity, title, message, null);
+	}
+	
+	/**
+	 * Display dialog to prompt for new subscription URL
+	 * @param url
+	 * @param message
+	 */
+	@UiThread
+	public void promptNewSubscription(String url, String message) {
+		final EditText input = new EditText(activity);
+		input.setText(url);
+		
+		new AlertDialog.Builder(activity)
+	    .setTitle("Subscribe")
+	    .setMessage(message)
+	    .setView(input)
+	    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int whichButton) {
+	            subscribe(null, input.getText().toString());
+	        }
+	    })
+	    .setNegativeButton("Cancel", null)
+	    .show();
 	}
 	
 	/**

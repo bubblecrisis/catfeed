@@ -2,6 +2,7 @@ package com.catfeed.activity;
 
 import static com.catfeed.Constants.FLKR_ID;
 
+import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
@@ -12,6 +13,8 @@ import utils.CursorUtils;
 import utils.ListPosition;
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -21,12 +24,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -143,7 +144,7 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 		super.onStart();
 		getListView().setOnItemLongClickListener(this);  // Long click to support editing of item
 		setListAdapter(adaptor);
-		checkForNewSubscription();
+		checkIntentForSubscription();
 	}
 	
 	/**
@@ -235,21 +236,39 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 	//--------------------------------------------------------------------------------------------------
 	// SUBSCRIBE
 	//--------------------------------------------------------------------------------------------------
-	public void checkForNewSubscription() {
-
-		// Detect RSS URL intent and subscribe to that URL.
+	
+	/**
+	 * Detect RSS URL intent and subscribe to that URL.
+	 */
+	private void checkIntentForSubscription() {
 		if (getIntent().getAction().equals(Intent.ACTION_VIEW)) {
-              String rssUrl = getIntent().getData().toString();
-              Log.d(Constants.LOGTAG, "Adding feed " + rssUrl); 
-              rss.subscribe(null, rssUrl);
+			String rssUrl = getIntent().getData().toString();
+			Log.d(Constants.LOGTAG, "Adding feed " + rssUrl);
+			rss.subscribe(null, rssUrl);
 		}
-		
-		// Check clipboard
-//		ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE); 
-//		ClipData clip = clipboard.getPrimaryClip();
-//		if (clip.getItemCount() > 0) {
-//			clip.getItemAt(0).getText()
-//		}
+	}
+	
+	/**
+	 * Check clipboard for subscription to a RSS URL
+	 */
+	private boolean subscribeFromClipboard() {
+		ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE); 
+		ClipData clip = clipboard.getPrimaryClip();
+		if (clip.getItemCount() > 0) {
+			String text = clip.getItemAt(0).getText().toString();
+			
+			// Check that it is a URL. If not, ignore it.
+			try {
+				new URL(text);
+				Log.d(Constants.LOGTAG, "Adding feed " + text);
+				rss.subscribe(null, text);
+				return true;
+			}
+			catch(Exception e) {
+				Log.d(Constants.LOGTAG, "Clipboard text is not a URL: " + e.toString());				
+			}
+		}
+		return false;
 	}
 	
 	//--------------------------------------------------------------------------------------------------
@@ -269,7 +288,9 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 
 	@OptionsItem(R.id.menuitem_add)
     void editMenuItemClicked() {
-//		MenuItem item = menu.findItem(R.id.menuitem_add);
+		if (!subscribeFromClipboard()) {
+			rss.promptNewSubscription("", "Enter the RSS URL");
+		}
     }
 	
 	@OptionsItem(R.id.menuitem_refresh)
