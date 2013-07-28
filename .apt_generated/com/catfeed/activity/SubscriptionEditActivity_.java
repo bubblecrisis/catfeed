@@ -39,12 +39,12 @@ public final class SubscriptionEditActivity_
     }
 
     private void afterSetContentView_() {
-        retainFor = ((SeekBar) findViewById(id.retainFor));
         url = ((TextView) findViewById(id.url));
-        downloadContent = ((CheckBox) findViewById(id.downloadContent));
-        downloadImage = ((CheckBox) findViewById(id.downloadImage));
-        title = ((TextView) findViewById(id.title));
         retainForLabel = ((TextView) findViewById(id.retainForLabel));
+        title = ((TextView) findViewById(id.title));
+        retainFor = ((SeekBar) findViewById(id.retainFor));
+        downloadImage = ((CheckBox) findViewById(id.downloadImage));
+        downloadContent = ((CheckBox) findViewById(id.downloadContent));
         {
             View view = findViewById(id.downloadImage);
             if (view!= null) {

@@ -83,12 +83,12 @@ public final class SubscriptionsActivity_
             return true;
         }
         int itemId_ = item.getItemId();
-        if (itemId_ == com.catfeed.R.id.menuitem_refresh) {
-            refreshMenuItemClicked();
-            return true;
-        }
         if (itemId_ == com.catfeed.R.id.menuitem_add) {
             editMenuItemClicked();
+            return true;
+        }
+        if (itemId_ == com.catfeed.R.id.menuitem_refresh) {
+            refreshMenuItemClicked();
             return true;
         }
         return false;

@@ -184,13 +184,13 @@ public class RssFeeder {
 	
 	/**
 	 * Display dialog to prompt for new subscription URL
-	 * @param url
+	 * @param defaultUrl
 	 * @param message
 	 */
 	@UiThread
-	public void promptNewSubscription(String url, String message) {
+	public void promptNewSubscription(String defaultUrl, String message) {
 		final EditText input = new EditText(activity);
-		input.setText(url);
+		input.setText(defaultUrl);
 		
 		new AlertDialog.Builder(activity)
 	    .setTitle("Subscribe")

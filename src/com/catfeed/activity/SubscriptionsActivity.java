@@ -286,6 +286,10 @@ public class SubscriptionsActivity extends ListActivity implements LoaderManager
 	// Menu
 	//--------------------------------------------------------------------------------------------------
 
+	/**
+	 * Handle menu item '+' add button. Check URL from clipboard. If nothing suitable in the clipboard,
+	 * prompt to enter RSS URL.
+	 */
 	@OptionsItem(R.id.menuitem_add)
     void editMenuItemClicked() {
 		if (!subscribeFromClipboard()) {

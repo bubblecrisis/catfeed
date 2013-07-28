@@ -30,8 +30,8 @@ public final class RssFeeder_
         if (!(context_ instanceof Activity)) {
             return ;
         }
-        ((WebPageFeeder_) webPageFeeder).afterSetContentView_();
         ((Repository_) repository).afterSetContentView_();
+        ((WebPageFeeder_) webPageFeeder).afterSetContentView_();
     }
 
     /**
@@ -53,8 +53,8 @@ public final class RssFeeder_
             activity = ((Activity) context_);
         }
         context = context_;
-        webPageFeeder = WebPageFeeder_.getInstance_(context_);
         repository = Repository_.getInstance_(context_);
+        webPageFeeder = WebPageFeeder_.getInstance_(context_);
     }
 
     public static RssFeeder_ getInstance_(Context context) {
@@ -67,42 +67,6 @@ public final class RssFeeder_
     }
 
     @Override
-    public void rssFetchError(final String title, final String message) {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                try {
-                    RssFeeder_.super.rssFetchError(title, message);
-                } catch (RuntimeException e) {
-                    Log.e("RssFeeder_", "A runtime exception was thrown while executing code in a runnable", e);
-                }
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void promptNewSubscription(final String url, final String message) {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                try {
-                    RssFeeder_.super.promptNewSubscription(url, message);
-                } catch (RuntimeException e) {
-                    Log.e("RssFeeder_", "A runtime exception was thrown while executing code in a runnable", e);
-                }
-            }
-
-        }
-        );
-    }
-
-    @Override
     public void finish(final Progress progress) {
         handler_.post(new Runnable() {
 
@@ -111,6 +75,42 @@ public final class RssFeeder_
             public void run() {
                 try {
                     RssFeeder_.super.finish(progress);
+                } catch (RuntimeException e) {
+                    Log.e("RssFeeder_", "A runtime exception was thrown while executing code in a runnable", e);
+                }
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void promptNewSubscription(final String defaultUrl, final String message) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    RssFeeder_.super.promptNewSubscription(defaultUrl, message);
+                } catch (RuntimeException e) {
+                    Log.e("RssFeeder_", "A runtime exception was thrown while executing code in a runnable", e);
+                }
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void rssFetchError(final String title, final String message) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    RssFeeder_.super.rssFetchError(title, message);
                 } catch (RuntimeException e) {
                     Log.e("RssFeeder_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -139,14 +139,14 @@ public final class RssFeeder_
     }
 
     @Override
-    public void subscribe(final Progress progress, final String feedUrl) {
+    public void downloadIcon(final Long subscriptionId, final String url) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    RssFeeder_.super.subscribe(progress, feedUrl);
+                    RssFeeder_.super.downloadIcon(subscriptionId, url);
                 } catch (RuntimeException e) {
                     Log.e("RssFeeder_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -157,14 +157,14 @@ public final class RssFeeder_
     }
 
     @Override
-    public void downloadIcon(final Long subscriptionId, final String url) {
+    public void subscribe(final Progress progress, final String feedUrl) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    RssFeeder_.super.downloadIcon(subscriptionId, url);
+                    RssFeeder_.super.subscribe(progress, feedUrl);
                 } catch (RuntimeException e) {
                     Log.e("RssFeeder_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

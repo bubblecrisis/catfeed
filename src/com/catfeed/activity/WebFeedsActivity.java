@@ -171,32 +171,6 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
     	subscription.refresh(rss, animate);
     }
 	
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		   switch (item.getItemId()) {
-//		    case R.id.menuitem_refresh:
-//		    	
-//		    	AnimatingItem animate = new AnimatingItem(item);
-//		    	animate.rotate(this, R.layout.animate_refresh);
-//		    	
-//		    	Repository repository = Repository.getRepository(this);
-//		    	//Subscription subscription = repository.findById(Subscription.class, subscription._id);
-//				//subscription.refresh(repository, new FeedRefreshed(repository, this, animate));
-//				subscription.refresh(rss, animate, new FeedRefreshed(repository, this, animate));
-//		    	return true;
-//		    }
-//		    return super.onOptionsItemSelected(item);
-//	}
-
-	public void refreshFinished() {
-//		Menu
-//		try {
-//		item.getActionView().clearAnimation();
-//		item.setActionView(null);				
-//	}
-//	catch(Exception e) { /* ignore, if stop gets called more than once it throws */ }
-	}
-	
 	//--------------------------------------------------------------------------------------------------
 	// Loader
 	//--------------------------------------------------------------------------------------------------
@@ -253,26 +227,5 @@ public class WebFeedsActivity extends ListActivity implements LoaderManager.Load
 	public void update(Observable observed, Object eventObject) {
 		updateSubtitle();		
 	}
-	
-//	public void update(Observable observed, Object eventObject) {
-//		if (eventObject instanceof ReceivedFeed) {
-//			ReceivedFeed feed = (ReceivedFeed) eventObject;
-//			if (subscription.url.equalsIgnoreCase(feed.feedUrl)) {	
-//				// We can't correctly figure out the total articles by getting it from syndfeed 
-//				// because there could be duplication. So we have to calculate from source.				
-//				application.totalArticles = WebFeed.count(Repository.getRepository(this), subscription._id);
-//				updateSubtitle();		
-//			}
-//		}
-//		if (eventObject instanceof WebFeed) {
-//			WebFeed feed = (WebFeed) eventObject;
-//			if (subscription._id.equals(feed.sub_id)) {
-//				application.noOfCachedArticles ++;
-//				updateSubtitle();		
-//			}
-//		}
-//	}
-	
-
 }
 
